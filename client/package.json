@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "seo:sitemap": "node scripts/generate-sitemap.mjs > public/sitemap.xml",
     "preview": "vite preview"
   },
   "dependencies": {
