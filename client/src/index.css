@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+@import "@fontsource/cormorant-garamond/300.css";
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/cormorant-garamond/400-italic.css";
+@import "@fontsource/cormorant-garamond/500-italic.css";
+@import "@fontsource/cormorant/300.css";
+@import "@fontsource/cormorant/400.css";
+@import "@fontsource/jost/300.css";
+@import "@fontsource/jost/400.css";
+@import "@fontsource/jost/500.css";
+@import "@fontsource/parisienne/400.css";
+@import "@fontsource/amiri/400.css";
+@import "@fontsource/amiri/400-italic.css";
+@import "@fontsource/amiri/700.css";
+
+@theme {
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-script: "Parisienne", cursive;
+  --font-sans: "Jost", "Helvetica Neue", sans-serif;
+
+  --color-ivory: #faf5ea;
+  --color-paper: #f6efdf;
+  --color-cream: #efe2c6;
+  --color-beige: #e3cda2;
+  --color-beige-dark: #c9a86a;
+
+  --color-ink: #241511;
+  --color-ink-soft: #4a332c;
+
+  --color-wine-950: #1c0509;
+  --color-wine-900: #2b070c;
+  --color-wine-850: #360910;
+  --color-wine-800: #4a0e16;
+  --color-wine-700: #5c121b;
+  --color-wine-600: #741822;
+  --color-wine-500: #8f2029;
+  --color-wine-400: #ac3a41;
+  --color-wine-300: #c46b6b;
+  --color-wine-200: #ddb2ac;
+  --color-wine-100: #f0ded8;
+
+  --color-gold: #c9a86a;
+  --color-gold-light: #e4d3a6;
+  --color-gold-deep: #a9823f;
+
+  --shadow-soft: 0 30px 80px -30px rgba(28, 5, 9, 0.35);
+  --shadow-card: 0 20px 60px -25px rgba(28, 5, 9, 0.45);
+
+  --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-wine-700);
+    color: var(--color-ivory);
+  }
+
+  /* English copy switches to Amiri — Cormorant/Jost don't carry the reference site's
+     typographic feel and Amiri has no Cyrillic, so it's scoped to the EN locale only. */
+  :root.font-en {
+    --font-sans: "Amiri", "Iowan Old Style", "Times New Roman", serif;
+  }
+  html.font-en h1,
+  html.font-en h2,
+  html.font-en h3,
+  html.font-en h4 {
+    font-family: "Amiri", "Cormorant Garamond", serif;
+    font-weight: 400;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  button {
+    font-family: inherit;
+  }
+}
+
+@layer utilities {
+  .font-script {
+    font-family: var(--font-script);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .kicker {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 60;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@layer base {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ivory);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-beige);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold-deep);
+  }
+}
