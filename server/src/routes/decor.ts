@@ -13,7 +13,9 @@ interface DecorRow {
   description_ru: string;
   description_en: string;
   description_sk: string;
-  price: string | null;
+  price_ru: string;
+  price_en: string;
+  price_sk: string;
   sort_order: number;
 }
 
@@ -25,11 +27,12 @@ interface DecorImageRow {
 }
 
 function serialize(row: DecorRow, images: DecorImageRow[]) {
+  const hasPrice = Boolean(row.price_ru || row.price_en || row.price_sk);
   return {
     id: row.id,
     name: { ru: row.name_ru, en: row.name_en, sk: row.name_sk },
     description: { ru: row.description_ru, en: row.description_en, sk: row.description_sk },
-    price: row.price,
+    price: hasPrice ? { ru: row.price_ru, en: row.price_en, sk: row.price_sk } : null,
     sortOrder: row.sort_order,
     images: images.map((img) => ({ id: img.id, url: img.image_url, sortOrder: img.sort_order })),
   };
@@ -61,8 +64,8 @@ decorAdminRouter.post("/", requireAdmin, (req, res) => {
   }
   const result = db
     .prepare(`
-      INSERT INTO decor_items (name_ru, name_en, name_sk, description_ru, description_en, description_sk, price, sort_order)
-      VALUES (@name_ru, @name_en, @name_sk, @description_ru, @description_en, @description_sk, @price, @sort_order)
+      INSERT INTO decor_items (name_ru, name_en, name_sk, description_ru, description_en, description_sk, price_ru, price_en, price_sk, sort_order)
+      VALUES (@name_ru, @name_en, @name_sk, @description_ru, @description_en, @description_sk, @price_ru, @price_en, @price_sk, @sort_order)
     `)
     .run({
       name_ru: name.ru,
@@ -71,7 +74,9 @@ decorAdminRouter.post("/", requireAdmin, (req, res) => {
       description_ru: description?.ru ?? "",
       description_en: description?.en ?? "",
       description_sk: description?.sk ?? "",
-      price: price ?? null,
+      price_ru: price?.ru ?? "",
+      price_en: price?.en ?? "",
+      price_sk: price?.sk ?? "",
       sort_order: sortOrder ?? 0,
     });
 
@@ -94,7 +99,7 @@ decorAdminRouter.put("/:id", requireAdmin, (req, res) => {
     UPDATE decor_items SET
       name_ru = @name_ru, name_en = @name_en, name_sk = @name_sk,
       description_ru = @description_ru, description_en = @description_en, description_sk = @description_sk,
-      price = @price, sort_order = @sort_order
+      price_ru = @price_ru, price_en = @price_en, price_sk = @price_sk, sort_order = @sort_order
     WHERE id = @id
   `).run({
     id: existing.id,
@@ -104,7 +109,9 @@ decorAdminRouter.put("/:id", requireAdmin, (req, res) => {
     description_ru: description?.ru ?? existing.description_ru,
     description_en: description?.en ?? existing.description_en,
     description_sk: description?.sk ?? existing.description_sk,
-    price: price !== undefined ? price : existing.price,
+    price_ru: price !== undefined ? (price?.ru ?? "") : existing.price_ru,
+    price_en: price !== undefined ? (price?.en ?? "") : existing.price_en,
+    price_sk: price !== undefined ? (price?.sk ?? "") : existing.price_sk,
     sort_order: sortOrder !== undefined ? sortOrder : existing.sort_order,
   });
 

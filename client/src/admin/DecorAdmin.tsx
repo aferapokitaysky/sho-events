@@ -66,7 +66,7 @@ export default function DecorAdmin() {
       id: item.id,
       nameRu: item.name.ru,
       descriptionRu: item.description.ru,
-      price: item.price ?? "",
+      price: item.price?.ru ?? "",
       images: item.images.map((img) => img.url),
     });
   }
@@ -100,14 +100,22 @@ export default function DecorAdmin() {
     setSaving(true);
     setError(null);
     try {
-      const [name, description] = await Promise.all([
+      const [name, description, translatedPrice] = await Promise.all([
         translateText(draft.nameRu, "ru"),
         translateText(draft.descriptionRu, "ru"),
+        draft.price.trim() ? translateText(draft.price, "ru") : Promise.resolve(null),
       ]);
+      // Translation doesn't reliably keep the € sign across languages, so
+      // re-apply the euro formatting to each translated value independently.
+      const price = translatedPrice && {
+        ru: formatPriceEuro(translatedPrice.ru),
+        en: formatPriceEuro(translatedPrice.en),
+        sk: formatPriceEuro(translatedPrice.sk),
+      };
       const payload = {
         name,
         description,
-        price: draft.price.trim() || null,
+        price,
         images: draft.images,
       };
       if (draft.id) {
@@ -248,7 +256,7 @@ export default function DecorAdmin() {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm text-ink">{item.name.ru}</p>
-                      {item.price && <p className="text-xs text-ink-soft/50">{item.price}</p>}
+                      {item.price?.ru && <p className="text-xs text-ink-soft/50">{item.price.ru}</p>}
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
                       <button onClick={() => editItem(item)} className="px-2 text-xs text-wine-700 hover:underline">

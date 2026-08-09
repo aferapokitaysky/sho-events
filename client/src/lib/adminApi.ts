@@ -21,7 +21,7 @@ export interface AdminService {
   title: LocalizedText;
   description: LocalizedText;
   imageUrl: string | null;
-  price: string | null;
+  price: LocalizedText | null;
   sortOrder: number;
 }
 
@@ -43,7 +43,7 @@ export interface AdminDecorItem {
   id: number;
   name: LocalizedText;
   description: LocalizedText;
-  price: string | null;
+  price: LocalizedText | null;
   sortOrder: number;
   images: DecorImage[];
 }
@@ -143,14 +143,14 @@ export const formatsApi = {
 
 export const decorApi = {
   list: () => request<{ ok: true; items: AdminDecorItem[] }>("/api/admin/decor").then((r) => r.items),
-  create: (payload: { name: LocalizedText; description: LocalizedText; price: string | null; images: string[] }) =>
+  create: (payload: { name: LocalizedText; description: LocalizedText; price: LocalizedText | null; images: string[] }) =>
     request<{ ok: true; item: AdminDecorItem }>("/api/admin/decor", {
       method: "POST",
       body: JSON.stringify(payload),
     }).then((r) => r.item),
   update: (
     id: number,
-    payload: Partial<{ name: LocalizedText; description: LocalizedText; price: string | null; images: string[] }>,
+    payload: Partial<{ name: LocalizedText; description: LocalizedText; price: LocalizedText | null; images: string[] }>,
   ) =>
     request<{ ok: true; item: AdminDecorItem }>(`/api/admin/decor/${id}`, {
       method: "PUT",

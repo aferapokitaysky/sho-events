@@ -14,17 +14,20 @@ interface ServiceRow {
   description_en: string;
   description_sk: string;
   image_url: string | null;
-  price: string | null;
+  price_ru: string;
+  price_en: string;
+  price_sk: string;
   sort_order: number;
 }
 
 function serialize(row: ServiceRow) {
+  const hasPrice = Boolean(row.price_ru || row.price_en || row.price_sk);
   return {
     id: row.id,
     title: { ru: row.title_ru, en: row.title_en, sk: row.title_sk },
     description: { ru: row.description_ru, en: row.description_en, sk: row.description_sk },
     imageUrl: row.image_url,
-    price: row.price,
+    price: hasPrice ? { ru: row.price_ru, en: row.price_en, sk: row.price_sk } : null,
     sortOrder: row.sort_order,
   };
 }
@@ -45,8 +48,8 @@ servicesAdminRouter.post("/", requireAdmin, (req, res) => {
     return res.status(400).json({ ok: false, error: "Missing required fields" });
   }
   const stmt = db.prepare(`
-    INSERT INTO services (title_ru, title_en, title_sk, description_ru, description_en, description_sk, image_url, price, sort_order)
-    VALUES (@title_ru, @title_en, @title_sk, @description_ru, @description_en, @description_sk, @image_url, @price, @sort_order)
+    INSERT INTO services (title_ru, title_en, title_sk, description_ru, description_en, description_sk, image_url, price_ru, price_en, price_sk, sort_order)
+    VALUES (@title_ru, @title_en, @title_sk, @description_ru, @description_en, @description_sk, @image_url, @price_ru, @price_en, @price_sk, @sort_order)
   `);
   const result = stmt.run({
     title_ru: title.ru,
@@ -56,7 +59,9 @@ servicesAdminRouter.post("/", requireAdmin, (req, res) => {
     description_en: description.en,
     description_sk: description.sk,
     image_url: imageUrl ?? null,
-    price: price ?? null,
+    price_ru: price?.ru ?? "",
+    price_en: price?.en ?? "",
+    price_sk: price?.sk ?? "",
     sort_order: sortOrder ?? 0,
   });
   const row = db.prepare("SELECT * FROM services WHERE id = ?").get(result.lastInsertRowid) as ServiceRow;
@@ -72,7 +77,7 @@ servicesAdminRouter.put("/:id", requireAdmin, (req, res) => {
     UPDATE services SET
       title_ru = @title_ru, title_en = @title_en, title_sk = @title_sk,
       description_ru = @description_ru, description_en = @description_en, description_sk = @description_sk,
-      image_url = @image_url, price = @price, sort_order = @sort_order
+      image_url = @image_url, price_ru = @price_ru, price_en = @price_en, price_sk = @price_sk, sort_order = @sort_order
     WHERE id = @id
   `).run({
     id: existing.id,
@@ -83,7 +88,9 @@ servicesAdminRouter.put("/:id", requireAdmin, (req, res) => {
     description_en: description?.en ?? existing.description_en,
     description_sk: description?.sk ?? existing.description_sk,
     image_url: imageUrl !== undefined ? imageUrl : existing.image_url,
-    price: price !== undefined ? price : existing.price,
+    price_ru: price !== undefined ? (price?.ru ?? "") : existing.price_ru,
+    price_en: price !== undefined ? (price?.en ?? "") : existing.price_en,
+    price_sk: price !== undefined ? (price?.sk ?? "") : existing.price_sk,
     sort_order: sortOrder !== undefined ? sortOrder : existing.sort_order,
   });
 

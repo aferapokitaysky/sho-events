@@ -18,7 +18,9 @@ db.exec(`
     description_en TEXT NOT NULL,
     description_sk TEXT NOT NULL,
     image_url TEXT,
-    price TEXT,
+    price_ru TEXT NOT NULL DEFAULT '',
+    price_en TEXT NOT NULL DEFAULT '',
+    price_sk TEXT NOT NULL DEFAULT '',
     sort_order INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
@@ -31,7 +33,9 @@ db.exec(`
     description_ru TEXT NOT NULL DEFAULT '',
     description_en TEXT NOT NULL DEFAULT '',
     description_sk TEXT NOT NULL DEFAULT '',
-    price TEXT,
+    price_ru TEXT NOT NULL DEFAULT '',
+    price_en TEXT NOT NULL DEFAULT '',
+    price_sk TEXT NOT NULL DEFAULT '',
     sort_order INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
@@ -91,11 +95,24 @@ db.exec(`
   );
 `);
 
-const portfolioColumns = new Set(
-  (db.prepare("PRAGMA table_info(portfolio_photos)").all() as { name: string }[]).map((c) => c.name),
-);
+function tableColumns(table: string): Set<string> {
+  return new Set((db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[]).map((c) => c.name));
+}
+
+const portfolioColumns = tableColumns("portfolio_photos");
 for (const col of ["title_ru", "title_en", "title_sk"]) {
   if (!portfolioColumns.has(col)) {
     db.exec(`ALTER TABLE portfolio_photos ADD COLUMN ${col} TEXT NOT NULL DEFAULT ''`);
+  }
+}
+
+for (const table of ["services", "decor_items"]) {
+  const columns = tableColumns(table);
+  if (columns.has("price_ru")) continue;
+  for (const col of ["price_ru", "price_en", "price_sk"]) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${col} TEXT NOT NULL DEFAULT ''`);
+  }
+  if (columns.has("price")) {
+    db.exec(`UPDATE ${table} SET price_ru = COALESCE(price, ''), price_en = COALESCE(price, ''), price_sk = COALESCE(price, '')`);
   }
 }

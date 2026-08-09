@@ -6,14 +6,14 @@ export interface PublicService {
   title: LocalizedText;
   description: LocalizedText;
   imageUrl: string | null;
-  price: string | null;
+  price: LocalizedText | null;
 }
 
 export interface PublicDecorItem {
   id: number;
   name: LocalizedText;
   description: LocalizedText;
-  price: string | null;
+  price: LocalizedText | null;
   images: { id: number; url: string }[];
 }
 
@@ -51,15 +51,15 @@ function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function getJson<T>(url: string, retries = 2): Promise<T> {
+async function getJson<T>(url: string, retries = 5): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
       if (!res.ok) throw new Error(`Request to ${url} failed: ${res.status}`);
       return (await res.json()) as T;
     } catch (err) {
       if (attempt >= retries) throw err;
-      await wait(400 * (attempt + 1));
+      await wait(Math.min(400 * 2 ** attempt, 3000));
     }
   }
 }

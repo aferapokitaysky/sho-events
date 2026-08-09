@@ -53,7 +53,7 @@ export default function Services() {
                       <div className="relative">
                         <h3 className="text-2xl text-ivory">{title}</h3>
                         <p className="mt-2 text-sm leading-relaxed text-ivory/70">{description}</p>
-                        {service.price && <p className="mt-3 text-sm text-ivory/70">{service.price}</p>}
+                        {service.price && <p className="mt-3 text-sm text-ivory/70">{pick(service.price, lang)}</p>}
                       </div>
                     </div>
                   ) : (
@@ -66,7 +66,7 @@ export default function Services() {
                         </p>
                         {service.price && (
                           <p className="mt-3 text-sm text-ink-soft/70 transition-colors duration-500 group-hover:text-ivory/60">
-                            {service.price}
+                            {pick(service.price, lang)}
                           </p>
                         )}
                       </div>

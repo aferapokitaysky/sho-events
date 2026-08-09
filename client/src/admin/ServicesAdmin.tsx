@@ -74,7 +74,7 @@ export default function ServicesAdmin() {
       id: service.id,
       titleRu: service.title.ru,
       descriptionRu: service.description.ru,
-      price: service.price ?? "",
+      price: service.price?.ru ?? "",
       imageUrl: service.imageUrl,
     });
   }
@@ -92,14 +92,23 @@ export default function ServicesAdmin() {
     setSaving(true);
     setError(null);
     try {
-      const [title, description] = await Promise.all([
+      setTranslating(true);
+      const [title, description, translatedPrice] = await Promise.all([
         translateText(draft.titleRu, "ru"),
         translateText(draft.descriptionRu, "ru"),
+        draft.price.trim() ? translateText(draft.price, "ru") : Promise.resolve(null),
       ]);
+      // Translation doesn't reliably keep the € sign across languages, so
+      // re-apply the euro formatting to each translated value independently.
+      const price = translatedPrice && {
+        ru: formatPriceEuro(translatedPrice.ru),
+        en: formatPriceEuro(translatedPrice.en),
+        sk: formatPriceEuro(translatedPrice.sk),
+      };
       const payload = {
         title,
         description,
-        price: draft.price.trim() || null,
+        price,
         imageUrl: draft.imageUrl,
       };
       if (draft.id) {
@@ -218,7 +227,7 @@ export default function ServicesAdmin() {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm text-ink">{service.title.ru}</p>
-                      {service.price && <p className="text-xs text-ink-soft/50">{service.price}</p>}
+                      {service.price?.ru && <p className="text-xs text-ink-soft/50">{service.price.ru}</p>}
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
                       <button onClick={() => moveService(i, -1)} disabled={i === 0} className="px-1.5 text-ink-soft/50 hover:text-wine-700 disabled:opacity-30">

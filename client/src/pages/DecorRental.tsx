@@ -66,7 +66,7 @@ export default function DecorRental() {
                         )}
                         {item.price && (
                           <span className="absolute bottom-4 left-4 rounded-full bg-ivory/90 px-4 py-1.5 text-sm text-wine-800 shadow-soft backdrop-blur-sm">
-                            {item.price}
+                            {pick(item.price, lang)}
                           </span>
                         )}
                       </div>
