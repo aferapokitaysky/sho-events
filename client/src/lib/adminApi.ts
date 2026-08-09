@@ -9,14 +9,11 @@ export function formatPriceEuro(value: string): string {
   if (!trimmed) return trimmed;
   if (/[€$£]/.test(trimmed)) return trimmed;
 
-  const match = trimmed.match(/^(от\s+|from\s+|od\s+)?(\d+(?:[.,]\d+)?)$/i);
-  if (!match) return trimmed;
+  const match = trimmed.match(/\d+(?:[.,]\d+)?/);
+  if (!match || match.index === undefined) return trimmed;
 
-  const [, prefix = "", number] = match;
-  const normalized = number.replace(",", ".");
-  const amount = Number(normalized);
-  const display = Number.isInteger(amount) ? String(amount) : normalized;
-  return `${prefix}${display} €`;
+  const insertAt = match.index + match[0].length;
+  return `${trimmed.slice(0, insertAt)} €${trimmed.slice(insertAt)}`;
 }
 
 export interface AdminService {
