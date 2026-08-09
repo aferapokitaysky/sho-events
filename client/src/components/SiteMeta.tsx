@@ -9,7 +9,7 @@ const BRAND_NAME = "SHO Events";
 const PHONE = "+421918165503";
 const EMAIL = "sho.events.sk@gmail.com";
 const INSTAGRAM = "https://www.instagram.com/sho.events.sk";
-const IMAGE_PATH = "/og-image.png";
+const IMAGE_PATH = "/og-image.jpg";
 
 function upsertMeta(selector: string, attributes: Record<string, string>) {
   let tag = document.head.querySelector<HTMLMetaElement>(selector);
@@ -83,9 +83,9 @@ export function SiteMeta() {
     upsertMeta('meta[property="og:url"]', { property: "og:url", content: canonical });
     upsertMeta('meta[property="og:image"]', { property: "og:image", content: imageUrl });
     upsertMeta('meta[property="og:image:secure_url"]', { property: "og:image:secure_url", content: imageUrl });
-    upsertMeta('meta[property="og:image:type"]', { property: "og:image:type", content: "image/png" });
-    upsertMeta('meta[property="og:image:width"]', { property: "og:image:width", content: "1731" });
-    upsertMeta('meta[property="og:image:height"]', { property: "og:image:height", content: "909" });
+    upsertMeta('meta[property="og:image:type"]', { property: "og:image:type", content: "image/jpeg" });
+    upsertMeta('meta[property="og:image:width"]', { property: "og:image:width", content: "1200" });
+    upsertMeta('meta[property="og:image:height"]', { property: "og:image:height", content: "630" });
     upsertMeta('meta[property="og:locale"]', { property: "og:locale", content: localeByLang[lang] });
     document.head
       .querySelectorAll('meta[property="og:locale:alternate"]')
