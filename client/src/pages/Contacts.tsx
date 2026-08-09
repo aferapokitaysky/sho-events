@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { Container, Divider, Kicker } from "@/components/ui/Section";
 import { Reveal, RevealItem, RevealStagger } from "@/components/ui/Reveal";
@@ -5,6 +6,7 @@ import { PhotoBandHero } from "@/components/ui/PhotoBandHero";
 import { InquiryForm, type ChannelOption, type FieldConfig } from "@/components/ui/InquiryForm";
 import { IconArrowUpRight, IconInstagram, IconMail, IconPhone, IconPin, IconThreads, IconWhatsapp } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
+import { fetchContactInfo, pick, type PublicContactInfo } from "@/lib/publicContent";
 import flatlayPhoto from "@/assets/photos/stationery-flatlay.webp";
 import heroPhoto from "@/assets/photos/hero-contacts-band.webp";
 
@@ -16,18 +18,33 @@ const channelIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   email: IconMail,
 };
 
-export default function Contacts() {
-  const { t } = useLanguage();
+const channelLabels: Record<string, string> = {
+  phone: "Телефон",
+  whatsapp: "WhatsApp",
+  instagram: "Instagram",
+  threads: "Threads",
+  email: "Email",
+};
 
-  const findChannel = (id: string) => t.contacts.channels.find((c) => c.id === id)?.label;
+export default function Contacts() {
+  const { t, lang } = useLanguage();
+  const [contactInfo, setContactInfo] = useState<PublicContactInfo | null>(null);
+
+  useEffect(() => {
+    fetchContactInfo()
+      .then(setContactInfo)
+      .catch(() => setContactInfo(null));
+  }, []);
+
+  const findLabel = (id: string) => t.contacts.channels.find((c) => c.id === id)?.label ?? channelLabels[id];
 
   const channelOptions: ChannelOption[] = [
-    { key: "phone", label: findChannel("phone") ?? "Phone", placeholder: "+421 900 000 000", inputType: "tel" },
+    { key: "phone", label: findLabel("phone"), placeholder: "+421 900 000 000", inputType: "tel" },
     { key: "whatsapp", label: "WhatsApp", placeholder: "+421 900 000 000", inputType: "tel" },
     { key: "telegram", label: "Telegram", placeholder: "@username", inputType: "text" },
-    { key: "instagram", label: findChannel("instagram") ?? "Instagram", placeholder: "@username", inputType: "text" },
-    { key: "threads", label: findChannel("threads") ?? "Threads", placeholder: "@username", inputType: "text" },
-    { key: "email", label: findChannel("email") ?? "Email", placeholder: "you@email.com", inputType: "email" },
+    { key: "instagram", label: findLabel("instagram"), placeholder: "@username", inputType: "text" },
+    { key: "threads", label: findLabel("threads"), placeholder: "@username", inputType: "text" },
+    { key: "email", label: findLabel("email"), placeholder: "you@email.com", inputType: "email" },
   ];
 
   const fields: FieldConfig[] = [
@@ -43,6 +60,12 @@ export default function Contacts() {
     },
     { name: "message", label: t.common.formMessage, type: "textarea", required: true },
   ];
+
+  const city = contactInfo ? pick(contactInfo.city, lang) : t.contacts.city;
+  const addressNote = contactInfo ? pick(contactInfo.addressNote, lang) : t.contacts.addressNote;
+  const channels = contactInfo
+    ? contactInfo.channels.map((c) => ({ ...c, label: findLabel(c.id) }))
+    : t.contacts.channels;
 
   return (
     <div>
@@ -64,14 +87,14 @@ export default function Contacts() {
                   <IconPin className="h-[18px] w-[18px]" />
                 </span>
                 <div>
-                  <p className="text-lg">{t.contacts.city}</p>
-                  <p className="text-sm text-ink-soft/60">{t.contacts.addressNote}</p>
+                  <p className="text-lg">{city}</p>
+                  <p className="text-sm text-ink-soft/60">{addressNote}</p>
                 </div>
               </div>
             </Reveal>
 
             <RevealStagger className="mt-8 grid gap-4 sm:grid-cols-2">
-              {t.contacts.channels.map((c) => {
+              {channels.map((c) => {
                 const Icon = channelIcons[c.id] ?? IconPhone;
                 const external = c.id !== "phone" && c.id !== "email";
                 return (

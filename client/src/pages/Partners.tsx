@@ -2,7 +2,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { Container, SectionHeading } from "@/components/ui/Section";
 import { Reveal, RevealItem, RevealStagger } from "@/components/ui/Reveal";
 import { PhotoBandHero } from "@/components/ui/PhotoBandHero";
-import { InquiryForm, type FieldConfig } from "@/components/ui/InquiryForm";
+import { InquiryForm, type ChannelOption, type FieldConfig } from "@/components/ui/InquiryForm";
 import {
   IconBriefcase,
   IconCube,
@@ -22,11 +22,23 @@ const collabIcons: ComponentType<SVGProps<SVGSVGElement>>[] = [IconHandshake, Ic
 export default function Partners() {
   const { t } = useLanguage();
 
+  const findChannel = (id: string) => t.contacts.channels.find((c) => c.id === id)?.label;
+
+  const channelOptions: ChannelOption[] = [
+    { key: "phone", label: findChannel("phone") ?? "Phone", placeholder: "+421 900 000 000", inputType: "tel" },
+    { key: "whatsapp", label: "WhatsApp", placeholder: "+421 900 000 000", inputType: "tel" },
+    { key: "telegram", label: "Telegram", placeholder: "@username", inputType: "text" },
+    { key: "instagram", label: findChannel("instagram") ?? "Instagram", placeholder: "@username", inputType: "text" },
+    { key: "threads", label: findChannel("threads") ?? "Threads", placeholder: "@username", inputType: "text" },
+    { key: "email", label: findChannel("email") ?? "Email", placeholder: "you@email.com", inputType: "email" },
+  ];
+
   const fields: FieldConfig[] = [
     { name: "name", label: t.common.formName, type: "text", required: true, span: "half" },
     { name: "company", label: t.common.formCompany, type: "text", required: true, span: "half" },
     { name: "contact", label: t.common.formContact, type: "text", required: true, span: "half" },
     { name: "email", label: t.common.formEmail, type: "email", span: "half" },
+    { name: "channels", label: t.common.formPreferredChannels, type: "checkboxGroup", channelOptions },
     { name: "message", label: t.common.formMessage, type: "textarea" },
   ];
 

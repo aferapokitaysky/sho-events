@@ -22,6 +22,8 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
         about: "/about",
         services: "/services",
         formats: "/formats",
+        decor: "/decor",
+        portfolio: "/portfolio",
         partners: "/partners",
         contacts: "/contacts",
       };

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BrandMark } from "@/components/Logo";
 import { useLanguage } from "@/lib/LanguageContext";
@@ -5,24 +6,37 @@ import { IconInstagram, IconMail, IconPhone, IconPin, IconThreads, IconWhatsapp 
 import { Container, Divider } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { ButtonLink } from "@/components/ui/Button";
+import { fetchContactInfo, pick, type PublicContactInfo } from "@/lib/publicContent";
 
-const navKeys = ["home", "about", "services", "formats", "partners", "contacts"] as const;
+const navKeys = ["home", "about", "services", "formats", "decor", "portfolio", "partners", "contacts"] as const;
 const navPaths: Record<(typeof navKeys)[number], string> = {
   home: "/",
   about: "/about",
   services: "/services",
   formats: "/formats",
+  decor: "/decor",
+  portfolio: "/portfolio",
   partners: "/partners",
   contacts: "/contacts",
 };
 
 export function Footer() {
-  const { t } = useLanguage();
-  const phone = t.contacts.channels.find((c) => c.id === "phone");
-  const whatsapp = t.contacts.channels.find((c) => c.id === "whatsapp");
-  const instagram = t.contacts.channels.find((c) => c.id === "instagram");
-  const threads = t.contacts.channels.find((c) => c.id === "threads");
-  const email = t.contacts.channels.find((c) => c.id === "email");
+  const { t, lang } = useLanguage();
+  const [contactInfo, setContactInfo] = useState<PublicContactInfo | null>(null);
+
+  useEffect(() => {
+    fetchContactInfo()
+      .then(setContactInfo)
+      .catch(() => setContactInfo(null));
+  }, []);
+
+  const channels = contactInfo ? contactInfo.channels : t.contacts.channels;
+  const city = contactInfo ? pick(contactInfo.city, lang) : t.contacts.city;
+  const phone = channels.find((c) => c.id === "phone");
+  const whatsapp = channels.find((c) => c.id === "whatsapp");
+  const instagram = channels.find((c) => c.id === "instagram");
+  const threads = channels.find((c) => c.id === "threads");
+  const email = channels.find((c) => c.id === "email");
 
   return (
     <footer className="relative overflow-hidden bg-wine-950 pt-24 text-ivory">
@@ -59,7 +73,7 @@ export function Footer() {
             <p className="kicker text-beige-dark">{t.contacts.kicker}</p>
             <ul className="mt-5 space-y-3 text-ivory/70">
               <li className="flex items-center gap-2.5">
-                <IconPin className="h-4 w-4 shrink-0 text-beige-dark" /> {t.contacts.city}
+                <IconPin className="h-4 w-4 shrink-0 text-beige-dark" /> {city}
               </li>
               {phone && (
                 <li>
@@ -77,7 +91,7 @@ export function Footer() {
                     data-cursor-hover
                     className="flex items-center gap-2.5 transition-colors hover:text-ivory"
                   >
-                    <IconWhatsapp className="h-4 w-4 shrink-0 text-beige-dark" /> {whatsapp.label}
+                    <IconWhatsapp className="h-4 w-4 shrink-0 text-beige-dark" /> WhatsApp
                   </a>
                 </li>
               )}

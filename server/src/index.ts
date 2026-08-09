@@ -1,10 +1,27 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import { randomUUID } from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { appendSubmission, listSubmissions, type Submission } from "./store.js";
 import { sendTelegramNotification } from "./telegram.js";
+import "./db.js";
+import { seedServicesIfEmpty, seedContactInfoIfEmpty } from "./seed.js";
+import { adminRouter } from "./routes/admin.js";
+import { servicesPublicRouter, servicesAdminRouter } from "./routes/services.js";
+import { decorPublicRouter, decorAdminRouter } from "./routes/decor.js";
+import { portfolioPublicRouter, portfolioAdminRouter } from "./routes/portfolio.js";
+import { contactInfoPublicRouter, contactInfoAdminRouter } from "./routes/contactInfo.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const UPLOADS_DIR = path.resolve(__dirname, "../uploads");
+fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+seedServicesIfEmpty();
+seedContactInfoIfEmpty();
 
 const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
@@ -13,9 +30,12 @@ const ADMIN_TOKEN = process.env.ADMIN_TOKEN ?? "";
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN?.split(",") ?? ["http://localhost:5173"],
+    credentials: true,
   }),
 );
 app.use(express.json({ limit: "20kb" }));
+app.use(cookieParser());
+app.use("/api/uploads", express.static(UPLOADS_DIR, { maxAge: "30d" }));
 
 const formLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -23,6 +43,14 @@ const formLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { ok: false, error: "Too many requests, please try again later." },
+});
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many login attempts, please try again later." },
 });
 
 const MAX_FIELD_LENGTH = 2000;
@@ -68,6 +96,18 @@ app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
 app.post("/api/partners", formLimiter, handleForm("partners", ["name", "company", "contact"]));
 app.post("/api/contact", formLimiter, handleForm("contact", ["name", "contact", "message"]));
+
+app.use("/api/admin/login", loginLimiter);
+app.use("/api/admin", adminRouter);
+app.use("/api/admin/services", servicesAdminRouter);
+app.use("/api/admin/decor", decorAdminRouter);
+app.use("/api/admin/portfolio", portfolioAdminRouter);
+app.use("/api/admin/contact-info", contactInfoAdminRouter);
+
+app.use("/api/services", servicesPublicRouter);
+app.use("/api/decor", decorPublicRouter);
+app.use("/api/portfolio", portfolioPublicRouter);
+app.use("/api/contact-info", contactInfoPublicRouter);
 
 app.get("/api/submissions", async (req, res) => {
   if (!ADMIN_TOKEN || req.headers["x-admin-token"] !== ADMIN_TOKEN) {

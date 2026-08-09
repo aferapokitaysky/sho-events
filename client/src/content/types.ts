@@ -7,6 +7,8 @@ export interface NavContent {
   formats: string;
   partners: string;
   contacts: string;
+  decor: string;
+  portfolio: string;
 }
 
 export interface CommonContent {
@@ -158,6 +160,24 @@ export interface ContactsContent {
   eventTypes: string[];
 }
 
+export interface DecorContent {
+  kicker: string;
+  title: string;
+  lead: string;
+  emptyText: string;
+  ctaTitle: string;
+  ctaText: string;
+}
+
+export interface PortfolioContent {
+  kicker: string;
+  title: string;
+  lead: string;
+  emptyText: string;
+  ctaTitle: string;
+  ctaText: string;
+}
+
 export interface SiteContent {
   meta: {
     title: string;
@@ -171,4 +191,6 @@ export interface SiteContent {
   formats: FormatsContent;
   partners: PartnersContent;
   contacts: ContactsContent;
+  decor: DecorContent;
+  portfolio: PortfolioContent;
 }

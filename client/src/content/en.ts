@@ -13,6 +13,8 @@ export const en: SiteContent = {
     formats: "Formats",
     partners: "Partners",
     contacts: "Contacts",
+    decor: "Decor Rental",
+    portfolio: "Portfolio",
   },
   common: {
     ctaConsult: "Get a Consultation",
@@ -206,5 +208,21 @@ export const en: SiteContent = {
       "Corporate event",
       "Other",
     ],
+  },
+  decor: {
+    kicker: "Decor Rental",
+    title: "Decor Rental for Styling",
+    lead: "A catalogue of tableware, textiles and decor for self-styling — pick up ready sets and build the atmosphere yourself.",
+    emptyText: "The catalogue is growing — check back soon.",
+    ctaTitle: "Couldn't find the right set?",
+    ctaText: "Tell us what mood you're after — we'll put together decor tailored to you.",
+  },
+  portfolio: {
+    kicker: "Portfolio",
+    title: "Moments we've created",
+    lead: "Real shots from our events — the atmosphere, the details and the emotions that stay with you.",
+    emptyText: "The portfolio is still filling up — the first shots will appear here soon.",
+    ctaTitle: "Want the same for your event?",
+    ctaText: "Tell us about your idea — we'll bring it to life with care for every detail.",
   },
 };

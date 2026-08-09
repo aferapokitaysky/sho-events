@@ -1,39 +1,23 @@
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { Container, Divider } from "@/components/ui/Section";
 import { Reveal, RevealItem, RevealStagger } from "@/components/ui/Reveal";
 import { PhotoBandHero } from "@/components/ui/PhotoBandHero";
 import { ButtonLink } from "@/components/ui/Button";
-import {
-  IconArrowUpRight,
-  IconBriefcase,
-  IconCube,
-  IconGlass,
-  IconPalette,
-  IconRing,
-  IconSparkle,
-} from "@/components/icons";
-import type { ComponentType, SVGProps } from "react";
+import { IconArrowUpRight, IconSparkle } from "@/components/icons";
 import { Link } from "react-router-dom";
-import rentalPhoto from "@/assets/photos/table-bright.webp";
-import sculpturePhoto from "@/assets/photos/figure-hippo.webp";
+import { fetchServices, pick, type PublicService } from "@/lib/publicContent";
 import heroPhoto from "@/assets/photos/hero-services-band.webp";
 
-const serviceIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
-  turnkey: IconSparkle,
-  brunchMasterclass: IconPalette,
-  corporate: IconBriefcase,
-  figures3d: IconCube,
-  dating: IconRing,
-  rentalDecor: IconGlass,
-};
-
-const servicePhotos: Record<string, string> = {
-  figures3d: sculpturePhoto,
-  rentalDecor: rentalPhoto,
-};
-
 export default function Services() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const [services, setServices] = useState<PublicService[]>([]);
+
+  useEffect(() => {
+    fetchServices()
+      .then(setServices)
+      .catch(() => setServices([]));
+  }, []);
 
   return (
     <div>
@@ -49,39 +33,39 @@ export default function Services() {
       <section className="py-24 sm:py-32">
         <Container>
           <RevealStagger className="grid gap-px overflow-hidden rounded-[1.75rem] bg-ink/10 sm:grid-cols-2 lg:grid-cols-3">
-            {t.services.services.map((service) => {
-              const Icon = serviceIcons[service.id] ?? IconSparkle;
-              const photo = servicePhotos[service.id];
+            {services.map((service) => {
+              const title = pick(service.title, lang);
+              const description = pick(service.description, lang);
               return (
                 <RevealItem key={service.id}>
-                  {photo ? (
-                    <div
-                      id={service.id}
-                      className="group relative flex h-full min-h-[300px] scroll-mt-32 flex-col justify-between overflow-hidden p-9"
-                    >
+                  {service.imageUrl ? (
+                    <div className="group relative flex h-full min-h-[300px] flex-col justify-between overflow-hidden p-9">
                       <img
-                        src={photo}
+                        src={service.imageUrl}
                         alt=""
                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-out group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-wine-950/92 via-wine-950/45 to-wine-950/10" />
-                      <Icon className="relative h-8 w-8 text-beige-dark" />
+                      <IconSparkle className="relative h-8 w-8 text-beige-dark" />
                       <div className="relative">
-                        <h3 className="text-2xl text-ivory">{service.title}</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-ivory/70">{service.description}</p>
+                        <h3 className="text-2xl text-ivory">{title}</h3>
+                        <p className="mt-2 text-sm leading-relaxed text-ivory/70">{description}</p>
+                        {service.price && <p className="mt-3 kicker text-beige-dark">{service.price}</p>}
                       </div>
                     </div>
                   ) : (
-                    <div
-                      id={service.id}
-                      className="group flex h-full min-h-[300px] scroll-mt-32 flex-col justify-between bg-ivory p-9 transition-colors duration-500 hover:bg-wine-900"
-                    >
-                      <Icon className="h-8 w-8 text-wine-700 transition-colors duration-500 group-hover:text-beige-dark" />
+                    <div className="group flex h-full min-h-[300px] flex-col justify-between bg-paper p-9 transition-colors duration-500 hover:bg-wine-900">
+                      <IconSparkle className="h-8 w-8 text-wine-700 transition-colors duration-500 group-hover:text-beige-dark" />
                       <div>
-                        <h3 className="text-2xl text-ink transition-colors duration-500 group-hover:text-ivory">{service.title}</h3>
+                        <h3 className="text-2xl text-ink transition-colors duration-500 group-hover:text-ivory">{title}</h3>
                         <p className="mt-2 text-sm leading-relaxed text-ink-soft/70 transition-colors duration-500 group-hover:text-ivory/60">
-                          {service.description}
+                          {description}
                         </p>
+                        {service.price && (
+                          <p className="mt-3 kicker text-wine-700 transition-colors duration-500 group-hover:text-beige-dark">
+                            {service.price}
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}

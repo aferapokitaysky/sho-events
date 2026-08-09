@@ -45,6 +45,7 @@ export function SiteMeta() {
   const location = useLocation();
 
   useEffect(() => {
+    if (location.pathname.startsWith("/admin")) return;
     const pageKey = getPageKey(location.pathname);
     const pageSeo = seoByLang[lang][pageKey];
     const canonical = buildPageUrl(location.pathname, lang);

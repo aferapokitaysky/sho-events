@@ -9,12 +9,14 @@ import { languages } from "@/content";
 import { IconClose, IconMenu, IconSearch } from "@/components/icons";
 import { SearchModal } from "./SearchModal";
 
-const navKeys = ["home", "about", "services", "formats", "partners", "contacts"] as const;
+const navKeys = ["home", "about", "services", "formats", "decor", "portfolio", "partners", "contacts"] as const;
 const navPaths: Record<(typeof navKeys)[number], string> = {
   home: "/",
   about: "/about",
   services: "/services",
   formats: "/formats",
+  decor: "/decor",
+  portfolio: "/portfolio",
   partners: "/partners",
   contacts: "/contacts",
 };
@@ -35,7 +37,7 @@ export function Header() {
           solid ? "bg-ivory/90 shadow-[0_1px_0_rgba(36,21,17,0.08)] backdrop-blur-md" : "bg-transparent",
         )}
       >
-        <div className="mx-auto flex h-[76px] max-w-[1400px] items-center justify-between px-6 sm:px-10">
+        <div className="flex h-[76px] w-full items-center justify-between px-6 sm:px-10 lg:px-14 2xl:px-20">
           <Link to="/" data-cursor-hover>
             <BrandMark
               imgClassName="h-10 w-10"
@@ -43,85 +45,87 @@ export function Header() {
             />
           </Link>
 
-          <nav className="hidden items-center gap-8 lg:flex">
-            {navKeys.map((key) => (
-              <NavLink
-                key={key}
-                to={navPaths[key]}
-                data-cursor-hover
-                className={({ isActive }) =>
-                  clsx(
-                    "kicker relative py-1 transition-colors duration-300",
-                    solid ? "text-ink-soft hover:text-wine-700" : "text-ivory/80 hover:text-ivory",
-                    isActive && (solid ? "text-wine-700" : "text-ivory"),
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <span className="relative">
-                    {t.nav[key]}
-                    {isActive && (
-                      <motion.span
-                        layoutId="nav-underline"
-                        className={clsx("absolute -bottom-1.5 left-0 h-px w-full", solid ? "bg-wine-700" : "bg-ivory")}
-                      />
-                    )}
-                  </span>
-                )}
-              </NavLink>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              data-cursor-hover
-              aria-label={t.common.searchPlaceholder}
-              className={clsx("transition-colors duration-300", solid ? "text-ink-soft hover:text-wine-700" : "text-ivory/80 hover:text-ivory")}
-            >
-              <IconSearch className="h-[18px] w-[18px]" />
-            </button>
-
-            <div className={clsx("hidden items-center gap-1 kicker sm:flex", solid ? "text-ink-soft" : "text-ivory/80")}>
-              {languages.map((l, i) => (
-                <span key={l.code} className="flex items-center">
-                  {i > 0 && <span className="mx-1 opacity-40">/</span>}
-                  <button
-                    type="button"
-                    onClick={() => setLang(l.code)}
-                    data-cursor-hover
-                    className={clsx(
-                      "transition-colors duration-300",
-                      lang === l.code ? (solid ? "text-wine-700" : "text-ivory") : "hover:opacity-70",
-                    )}
-                  >
-                    {l.label}
-                  </button>
-                </span>
+          <div className="flex items-center gap-10 2xl:gap-14">
+            <nav className="hidden items-center gap-5 lg:flex 2xl:gap-8">
+              {navKeys.map((key) => (
+                <NavLink
+                  key={key}
+                  to={navPaths[key]}
+                  data-cursor-hover
+                  className={({ isActive }) =>
+                    clsx(
+                      "nav-kicker relative py-1 transition-colors duration-300",
+                      solid ? "text-ink-soft hover:text-wine-700" : "text-ivory/80 hover:text-ivory",
+                      isActive && (solid ? "text-wine-700" : "text-ivory"),
+                    )
+                  }
+                >
+                  {({ isActive }) => (
+                    <span className="relative">
+                      {t.nav[key]}
+                      {isActive && (
+                        <motion.span
+                          layoutId="nav-underline"
+                          className={clsx("absolute -bottom-1.5 left-0 h-px w-full", solid ? "bg-wine-700" : "bg-ivory")}
+                        />
+                      )}
+                    </span>
+                  )}
+                </NavLink>
               ))}
+            </nav>
+
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                data-cursor-hover
+                aria-label={t.common.searchPlaceholder}
+                className={clsx("transition-colors duration-300", solid ? "text-ink-soft hover:text-wine-700" : "text-ivory/80 hover:text-ivory")}
+              >
+                <IconSearch className="h-[18px] w-[18px]" />
+              </button>
+
+              <div className={clsx("hidden items-center gap-1 kicker sm:flex", solid ? "text-ink-soft" : "text-ivory/80")}>
+                {languages.map((l, i) => (
+                  <span key={l.code} className="flex items-center">
+                    {i > 0 && <span className="mx-1 opacity-40">/</span>}
+                    <button
+                      type="button"
+                      onClick={() => setLang(l.code)}
+                      data-cursor-hover
+                      className={clsx(
+                        "transition-colors duration-300",
+                        lang === l.code ? (solid ? "text-wine-700" : "text-ivory") : "hover:opacity-70",
+                      )}
+                    >
+                      {l.label}
+                    </button>
+                  </span>
+                ))}
+              </div>
+
+              <Link
+                to="/contacts"
+                data-cursor-hover
+                className={clsx(
+                  "kicker hidden whitespace-nowrap rounded-full px-5 py-2.5 transition-colors duration-300 sm:inline-flex",
+                  solid ? "bg-wine-800 text-ivory hover:bg-wine-700" : "bg-ivory text-wine-800 hover:bg-ivory/90",
+                )}
+              >
+                {t.common.ctaBook}
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setMenuOpen((v) => !v)}
+                data-cursor-hover
+                aria-label={menuOpen ? t.common.close : t.common.menu}
+                className={clsx("lg:hidden", solid ? "text-ink" : "text-ivory")}
+              >
+                {menuOpen ? <IconClose className="h-6 w-6" /> : <IconMenu className="h-6 w-6" />}
+              </button>
             </div>
-
-            <Link
-              to="/contacts"
-              data-cursor-hover
-              className={clsx(
-                "kicker hidden whitespace-nowrap rounded-full px-5 py-2.5 transition-colors duration-300 sm:inline-flex",
-                solid ? "bg-wine-800 text-ivory hover:bg-wine-700" : "bg-ivory text-wine-800 hover:bg-ivory/90",
-              )}
-            >
-              {t.common.ctaBook}
-            </Link>
-
-            <button
-              type="button"
-              onClick={() => setMenuOpen((v) => !v)}
-              data-cursor-hover
-              aria-label={menuOpen ? t.common.close : t.common.menu}
-              className={clsx("lg:hidden", solid ? "text-ink" : "text-ivory")}
-            >
-              {menuOpen ? <IconClose className="h-6 w-6" /> : <IconMenu className="h-6 w-6" />}
-            </button>
           </div>
         </div>
       </header>
@@ -133,9 +137,9 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-40 bg-ivory pt-[76px] lg:hidden"
+            className="fixed inset-0 z-40 overflow-y-auto bg-ivory pt-[76px] lg:hidden"
           >
-            <nav className="flex h-full flex-col justify-center gap-1 px-8 pb-24">
+            <nav className="flex min-h-[calc(100%-76px)] flex-col justify-center gap-1 px-8 pb-24">
               {navKeys.map((key, i) => (
                 <motion.div
                   key={key}

@@ -3,14 +3,23 @@ import { AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { ScrollToTop } from "@/lib/ScrollToTop";
+import { AdminAuthProvider } from "@/lib/AdminAuthContext";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Services from "@/pages/Services";
 import Formats from "@/pages/Formats";
 import Partners from "@/pages/Partners";
 import Contacts from "@/pages/Contacts";
+import DecorRental from "@/pages/DecorRental";
+import Portfolio from "@/pages/Portfolio";
+import AdminLogin from "@/admin/AdminLogin";
+import AdminLayout from "@/admin/AdminLayout";
+import ServicesAdmin from "@/admin/ServicesAdmin";
+import DecorAdmin from "@/admin/DecorAdmin";
+import PortfolioAdmin from "@/admin/PortfolioAdmin";
+import ContactInfoAdmin from "@/admin/ContactInfoAdmin";
 
-function App() {
+function PublicApp() {
   const location = useLocation();
 
   return (
@@ -67,9 +76,50 @@ function App() {
               </PageTransition>
             }
           />
+          <Route
+            path="/decor"
+            element={
+              <PageTransition>
+                <DecorRental />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/portfolio"
+            element={
+              <PageTransition>
+                <Portfolio />
+              </PageTransition>
+            }
+          />
         </Routes>
       </AnimatePresence>
     </Layout>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route
+        path="/admin/*"
+        element={
+          <AdminAuthProvider>
+            <Routes>
+              <Route path="login" element={<AdminLogin />} />
+              <Route element={<AdminLayout />}>
+                <Route index element={<Navigate to="services" replace />} />
+                <Route path="services" element={<ServicesAdmin />} />
+                <Route path="decor" element={<DecorAdmin />} />
+                <Route path="portfolio" element={<PortfolioAdmin />} />
+                <Route path="contact-info" element={<ContactInfoAdmin />} />
+              </Route>
+            </Routes>
+          </AdminAuthProvider>
+        }
+      />
+      <Route path="/*" element={<PublicApp />} />
+    </Routes>
   );
 }
 

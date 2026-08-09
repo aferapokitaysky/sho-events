@@ -28,7 +28,11 @@ build/
 # ==============================
 server/data/submissions.json
 server/data/*.json
+server/data/*.db
+server/data/*.db-*
 !server/data/.gitkeep
+server/uploads/*
+!server/uploads/.gitkeep
 
 # ==============================
 # Logs

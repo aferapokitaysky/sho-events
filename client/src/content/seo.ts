@@ -1,6 +1,6 @@
 import type { Lang } from "./types";
 
-export type PageKey = "home" | "about" | "services" | "formats" | "partners" | "contacts";
+export type PageKey = "home" | "about" | "services" | "formats" | "decor" | "portfolio" | "partners" | "contacts";
 
 export interface PageSeo {
   title: string;
@@ -13,6 +13,8 @@ export const pagePaths: Record<PageKey, string> = {
   about: "/about",
   services: "/services",
   formats: "/formats",
+  decor: "/decor",
+  portfolio: "/portfolio",
   partners: "/partners",
   contacts: "/contacts",
 };
@@ -104,6 +106,17 @@ export const seoByLang: Record<Lang, Record<PageKey, PageSeo>> = {
         "event planner Bratislava contact",
       ],
     },
+    decor: {
+      title: "Аренда декора для сервировки — SHO Events Братислава",
+      description:
+        "Каталог посуды, текстиля и декора для самостоятельной сервировки в Братиславе — готовые наборы с фото и ценами.",
+      keywords: ["аренда декора Братислава", "прокат посуды Братислава", "декор для сервировки", "SHO Events декор"],
+    },
+    portfolio: {
+      title: "Портфолио SHO Events — фото с наших мероприятий в Братиславе",
+      description: "Реальные кадры с мероприятий SHO Events: атмосфера, декор и детали событий в Братиславе.",
+      keywords: ["портфолио ивент агентства", "фото мероприятий Братислава", "SHO Events портфолио"],
+    },
   },
   en: {
     home: {
@@ -175,6 +188,16 @@ export const seoByLang: Record<Lang, Record<PageKey, PageSeo>> = {
         "event planner Bratislava contact",
       ],
     },
+    decor: {
+      title: "Decor Rental for Styling — SHO Events Bratislava",
+      description: "A catalogue of tableware, textiles and decor for self-styling in Bratislava — ready sets with photos and prices.",
+      keywords: ["decor rental Bratislava", "tableware rental Bratislava", "styling decor", "SHO Events decor"],
+    },
+    portfolio: {
+      title: "SHO Events Portfolio — Photos From Our Events in Bratislava",
+      description: "Real shots from SHO Events celebrations: atmosphere, decor and detail from events in Bratislava.",
+      keywords: ["event agency portfolio", "event photos Bratislava", "SHO Events portfolio"],
+    },
   },
   sk: {
     home: {
@@ -245,6 +268,16 @@ export const seoByLang: Record<Lang, Record<PageKey, PageSeo>> = {
         "event agentúra kontakt",
         "organizácia podujatí kontakt",
       ],
+    },
+    decor: {
+      title: "Prenájom dekoru na prestieranie — SHO Events Bratislava",
+      description: "Katalóg riadu, textilu a dekoru na samostatné prestieranie v Bratislave — hotové sety s fotkami a cenami.",
+      keywords: ["prenájom dekoru Bratislava", "prenájom riadu Bratislava", "dekor na prestieranie", "SHO Events dekor"],
+    },
+    portfolio: {
+      title: "Portfólio SHO Events — fotky z našich podujatí v Bratislave",
+      description: "Skutočné zábery z podujatí SHO Events: atmosféra, dekor a detaily podujatí v Bratislave.",
+      keywords: ["portfólio event agentúry", "fotky z podujatí Bratislava", "SHO Events portfólio"],
     },
   },
 };

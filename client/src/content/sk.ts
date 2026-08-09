@@ -13,6 +13,8 @@ export const sk: SiteContent = {
     formats: "Formáty",
     partners: "Partnerom",
     contacts: "Kontakty",
+    decor: "Prenájom dekoru",
+    portfolio: "Portfólio",
   },
   common: {
     ctaConsult: "Získať konzultáciu",
@@ -206,5 +208,21 @@ export const sk: SiteContent = {
       "Firemné podujatie",
       "Iné",
     ],
+  },
+  decor: {
+    kicker: "Prenájom dekoru",
+    title: "Prenájom dekoru na prestieranie",
+    lead: "Katalóg riadu, textilu a dekoru na samostatné prestieranie — vyzdvihnite si hotové sety a vytvorte atmosféru sami.",
+    emptyText: "Katalóg sa práve dopĺňa — pozrite sa opäť čoskoro.",
+    ctaTitle: "Nenašli ste vhodný set?",
+    ctaText: "Povedzte nám, akú atmosféru hľadáte — pripravíme dekor na mieru.",
+  },
+  portfolio: {
+    kicker: "Portfólio",
+    title: "Momenty, ktoré sme vytvorili",
+    lead: "Skutočné zábery z našich podujatí — atmosféra, detaily a emócie, ktoré zostávajú.",
+    emptyText: "Portfólio sa ešte napĺňa — prvé zábery tu čoskoro pribudnú.",
+    ctaTitle: "Chcete to isté pre svoje podujatie?",
+    ctaText: "Povedzte nám o svojom nápade — s láskou k detailu ho premeníme na realitu.",
   },
 };

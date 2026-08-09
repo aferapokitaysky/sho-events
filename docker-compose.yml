@@ -8,6 +8,7 @@ services:
       - ./server/.env
     volumes:
       - api-data:/app/data
+      - api-uploads:/app/uploads
     networks:
       - internal
 
@@ -41,5 +42,6 @@ networks:
 
 volumes:
   api-data:
+  api-uploads:
   certbot-etc:
   certbot-webroot:
