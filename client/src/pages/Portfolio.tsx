@@ -6,12 +6,14 @@ import { PhotoBandHero } from "@/components/ui/PhotoBandHero";
 import { ButtonLink } from "@/components/ui/Button";
 import { ConnectingPath } from "@/components/ui/ConnectingPath";
 import { fetchPortfolioPhotos, pick, type PublicPortfolioPhoto } from "@/lib/publicContent";
-import heroPhoto from "@/assets/photos/card-memorable-moments.webp";
+import heroPhotoDefault from "@/assets/photos/card-memorable-moments.webp";
+import { useSiteImage } from "@/lib/useSiteImage";
 
 const ROW_OFFSET = ["sm:mt-0", "sm:mt-20", "sm:mt-10"];
 
 export default function Portfolio() {
   const { t, lang } = useLanguage();
+  const heroPhoto = useSiteImage("portfolio_hero", heroPhotoDefault);
   const [photos, setPhotos] = useState<PublicPortfolioPhoto[]>([]);
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);

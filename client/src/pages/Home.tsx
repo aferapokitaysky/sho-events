@@ -4,7 +4,8 @@ import { Container, Divider, Kicker, SectionHeading } from "@/components/ui/Sect
 import { Reveal, RevealItem, RevealStagger } from "@/components/ui/Reveal";
 import { ButtonLink } from "@/components/ui/Button";
 import { Marquee } from "@/components/ui/Marquee";
-import heroPhoto from "@/assets/photos/table-candlelit-dark.webp";
+import heroPhotoDefault from "@/assets/photos/table-candlelit-dark.webp";
+import { useSiteImage } from "@/lib/useSiteImage";
 import {
   IconArrowRight,
   IconBriefcase,
@@ -31,6 +32,7 @@ const serviceIconsById: Record<string, typeof IconSparkle> = {
 
 export default function Home() {
   const { t } = useLanguage();
+  const heroPhoto = useSiteImage("home_hero", heroPhotoDefault);
 
   return (
     <div>

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, type RefObject } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 
 interface Point {
   x: number;
@@ -60,7 +60,12 @@ export function ConnectingPath({
 }) {
   const [state, setState] = useState<{ d: string; width: number; height: number }>({ d: "", width: 0, height: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
-  const inView = useInView(svgRef, { once: true, margin: "-100px" });
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 0.92", "end 0.55"],
+  });
+  const rawPathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const pathLength = useSpring(rawPathLength, { stiffness: 90, damping: 26, mass: 0.4 });
 
   useLayoutEffect(() => {
     function recompute() {
@@ -98,8 +103,6 @@ export function ConnectingPath({
     };
   }, [containerRef, itemRefs, count]);
 
-  const duration = Math.min(2.8 + count * 0.75, 8.5);
-
   return (
     <svg
       ref={svgRef}
@@ -125,9 +128,7 @@ export function ConnectingPath({
           strokeLinecap="round"
           strokeLinejoin="round"
           opacity={0.8}
-          initial={{ pathLength: 0 }}
-          animate={inView ? { pathLength: 1 } : { pathLength: 0 }}
-          transition={{ duration, delay: 0.3, ease: "easeInOut" }}
+          style={{ pathLength }}
         />
       )}
     </svg>

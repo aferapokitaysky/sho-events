@@ -6,10 +6,12 @@ import { PhotoBandHero } from "@/components/ui/PhotoBandHero";
 import { ButtonLink } from "@/components/ui/Button";
 import { IconGlass } from "@/components/icons";
 import { fetchDecorItems, pick, type PublicDecorItem } from "@/lib/publicContent";
-import heroPhoto from "@/assets/photos/table-bright.webp";
+import heroPhotoDefault from "@/assets/photos/table-bright.webp";
+import { useSiteImage } from "@/lib/useSiteImage";
 
 export default function DecorRental() {
   const { t, lang } = useLanguage();
+  const heroPhoto = useSiteImage("decor_hero", heroPhotoDefault);
   const [items, setItems] = useState<PublicDecorItem[]>([]);
   const [loading, setLoading] = useState(true);
 

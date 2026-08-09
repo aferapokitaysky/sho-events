@@ -84,6 +84,11 @@ db.exec(`
     address_note_en TEXT NOT NULL DEFAULT '',
     address_note_sk TEXT NOT NULL DEFAULT ''
   );
+
+  CREATE TABLE IF NOT EXISTS site_images (
+    image_key TEXT PRIMARY KEY,
+    image_url TEXT NOT NULL
+  );
 `);
 
 const portfolioColumns = new Set(

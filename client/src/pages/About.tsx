@@ -9,14 +9,16 @@ import quotePhoto from "@/assets/photos/table-candlelit-dark.webp";
 import storyPhotoRu from "@/assets/photos/envelope-about.webp";
 import storyPhotoEn from "@/assets/photos/aboutusEN.webp";
 import storyPhotoSk from "@/assets/photos/aboutusclovac.webp";
-import heroPhoto from "@/assets/photos/hero-about-band.webp";
+import heroPhotoDefault from "@/assets/photos/hero-about-band.webp";
 import type { Lang } from "@/content";
+import { useSiteImage } from "@/lib/useSiteImage";
 
 const valueIcons = [IconStar, IconSparkle, IconLeaf, IconHandshake];
 const storyPhotos: Record<Lang, string> = { ru: storyPhotoRu, en: storyPhotoEn, sk: storyPhotoSk };
 
 export default function About() {
   const { t, lang } = useLanguage();
+  const heroPhoto = useSiteImage("about_hero", heroPhotoDefault);
 
   return (
     <div>

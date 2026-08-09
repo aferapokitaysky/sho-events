@@ -17,6 +17,7 @@ import { decorPublicRouter, decorAdminRouter } from "./routes/decor.js";
 import { portfolioPublicRouter, portfolioAdminRouter } from "./routes/portfolio.js";
 import { formatsPublicRouter, formatsAdminRouter } from "./routes/formats.js";
 import { contactInfoPublicRouter, contactInfoAdminRouter } from "./routes/contactInfo.js";
+import { siteImagesPublicRouter, siteImagesAdminRouter } from "./routes/siteImages.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOADS_DIR = path.resolve(__dirname, "../uploads");
@@ -106,12 +107,14 @@ app.use("/api/admin/decor", decorAdminRouter);
 app.use("/api/admin/portfolio", portfolioAdminRouter);
 app.use("/api/admin/formats", formatsAdminRouter);
 app.use("/api/admin/contact-info", contactInfoAdminRouter);
+app.use("/api/admin/site-images", siteImagesAdminRouter);
 
 app.use("/api/services", servicesPublicRouter);
 app.use("/api/decor", decorPublicRouter);
 app.use("/api/portfolio", portfolioPublicRouter);
 app.use("/api/formats", formatsPublicRouter);
 app.use("/api/contact-info", contactInfoPublicRouter);
+app.use("/api/site-images", siteImagesPublicRouter);
 
 app.get("/api/submissions", async (req, res) => {
   if (!ADMIN_TOKEN || req.headers["x-admin-token"] !== ADMIN_TOKEN) {

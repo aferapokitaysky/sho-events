@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: "/admin/formats", label: "Форматы" },
   { to: "/admin/decor", label: "Аренда декора" },
   { to: "/admin/portfolio", label: "Портфолио" },
+  { to: "/admin/media", label: "Медиа" },
   { to: "/admin/contact-info", label: "Контакты" },
 ];
 

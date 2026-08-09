@@ -6,10 +6,12 @@ import { ButtonLink } from "@/components/ui/Button";
 import { PhotoBandHero } from "@/components/ui/PhotoBandHero";
 import { IconSparkle } from "@/components/icons";
 import { fetchFormats, pick, type PublicFormat } from "@/lib/publicContent";
-import bannerPhoto from "@/assets/photos/hero-formats-band.webp";
+import bannerPhotoDefault from "@/assets/photos/hero-formats-band.webp";
+import { useSiteImage } from "@/lib/useSiteImage";
 
 export default function Formats() {
   const { t, lang } = useLanguage();
+  const bannerPhoto = useSiteImage("formats_hero", bannerPhotoDefault);
   const [formats, setFormats] = useState<PublicFormat[]>([]);
 
   useEffect(() => {

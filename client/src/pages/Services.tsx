@@ -7,10 +7,12 @@ import { ButtonLink } from "@/components/ui/Button";
 import { IconArrowUpRight, IconSparkle } from "@/components/icons";
 import { Link } from "react-router-dom";
 import { fetchServices, pick, type PublicService } from "@/lib/publicContent";
-import heroPhoto from "@/assets/photos/hero-services-band.webp";
+import heroPhotoDefault from "@/assets/photos/hero-services-band.webp";
+import { useSiteImage } from "@/lib/useSiteImage";
 
 export default function Services() {
   const { t, lang } = useLanguage();
+  const heroPhoto = useSiteImage("services_hero", heroPhotoDefault);
   const [services, setServices] = useState<PublicService[]>([]);
 
   useEffect(() => {

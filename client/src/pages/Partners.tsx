@@ -14,13 +14,15 @@ import {
 } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
 import collabPhoto from "@/assets/photos/wax-seal-photo.webp";
-import heroPhoto from "@/assets/photos/hero-partners-band.webp";
+import heroPhotoDefault from "@/assets/photos/hero-partners-band.webp";
+import { useSiteImage } from "@/lib/useSiteImage";
 
 const audienceIcons: ComponentType<SVGProps<SVGSVGElement>>[] = [IconGrapes, IconPin, IconGift, IconBriefcase, IconUsers];
 const collabIcons: ComponentType<SVGProps<SVGSVGElement>>[] = [IconHandshake, IconPin, IconCube, IconBriefcase];
 
 export default function Partners() {
   const { t } = useLanguage();
+  const heroPhoto = useSiteImage("partners_hero", heroPhotoDefault);
 
   const findChannel = (id: string) => t.contacts.channels.find((c) => c.id === id)?.label;
 

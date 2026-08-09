@@ -19,6 +19,7 @@ import DecorAdmin from "@/admin/DecorAdmin";
 import PortfolioAdmin from "@/admin/PortfolioAdmin";
 import FormatsAdmin from "@/admin/FormatsAdmin";
 import ContactInfoAdmin from "@/admin/ContactInfoAdmin";
+import MediaAdmin from "@/admin/MediaAdmin";
 
 function PublicApp() {
   const location = useLocation();
@@ -115,6 +116,7 @@ function App() {
                 <Route path="portfolio" element={<PortfolioAdmin />} />
                 <Route path="formats" element={<FormatsAdmin />} />
                 <Route path="contact-info" element={<ContactInfoAdmin />} />
+                <Route path="media" element={<MediaAdmin />} />
               </Route>
             </Routes>
           </AdminAuthProvider>

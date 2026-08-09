@@ -198,3 +198,18 @@ export const contactInfoApi = {
       body: JSON.stringify(payload),
     }).then((r) => r.contactInfo),
 };
+
+export interface SiteImageSlot {
+  key: string;
+  label: string;
+}
+
+export const siteImagesApi = {
+  list: () =>
+    request<{ ok: true; slots: SiteImageSlot[]; images: Record<string, string> }>("/api/admin/site-images"),
+  set: (key: string, imageUrl: string | null) =>
+    request<{ ok: true; imageUrl: string | null }>(`/api/admin/site-images/${key}`, {
+      method: "PUT",
+      body: JSON.stringify({ imageUrl }),
+    }),
+};

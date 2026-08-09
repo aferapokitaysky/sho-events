@@ -88,3 +88,8 @@ export async function fetchContactInfo(): Promise<PublicContactInfo> {
   const data = await getJson<{ ok: true; contactInfo: PublicContactInfo }>("/api/contact-info");
   return data.contactInfo;
 }
+
+export async function fetchSiteImages(): Promise<Record<string, string>> {
+  const data = await getJson<{ ok: true; images: Record<string, string> }>("/api/site-images");
+  return data.images;
+}

@@ -8,7 +8,8 @@ import { IconArrowUpRight, IconInstagram, IconMail, IconPhone, IconPin, IconThre
 import type { ComponentType, SVGProps } from "react";
 import { fetchContactInfo, pick, type PublicContactInfo } from "@/lib/publicContent";
 import flatlayPhoto from "@/assets/photos/stationery-flatlay.webp";
-import heroPhoto from "@/assets/photos/hero-contacts-band.webp";
+import heroPhotoDefault from "@/assets/photos/hero-contacts-band.webp";
+import { useSiteImage } from "@/lib/useSiteImage";
 
 const channelIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   phone: IconPhone,
@@ -28,6 +29,7 @@ const channelLabels: Record<string, string> = {
 
 export default function Contacts() {
   const { t, lang } = useLanguage();
+  const heroPhoto = useSiteImage("contacts_hero", heroPhotoDefault);
   const [contactInfo, setContactInfo] = useState<PublicContactInfo | null>(null);
 
   useEffect(() => {
