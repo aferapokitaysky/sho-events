@@ -29,12 +29,6 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       };
       items.push({ title: t.nav[key], group: t.common.menu, path: paths[key] });
     });
-    t.services.services.forEach((s) => {
-      items.push({ title: s.title, group: t.services.kicker, path: `/services#${s.id}` });
-    });
-    t.formats.formats.forEach((f) => {
-      items.push({ title: f.title, group: t.formats.kicker, path: `/formats#${f.id}` });
-    });
     return items;
   }, [t]);
 

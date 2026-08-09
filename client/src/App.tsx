@@ -17,6 +17,7 @@ import AdminLayout from "@/admin/AdminLayout";
 import ServicesAdmin from "@/admin/ServicesAdmin";
 import DecorAdmin from "@/admin/DecorAdmin";
 import PortfolioAdmin from "@/admin/PortfolioAdmin";
+import FormatsAdmin from "@/admin/FormatsAdmin";
 import ContactInfoAdmin from "@/admin/ContactInfoAdmin";
 
 function PublicApp() {
@@ -112,6 +113,7 @@ function App() {
                 <Route path="services" element={<ServicesAdmin />} />
                 <Route path="decor" element={<DecorAdmin />} />
                 <Route path="portfolio" element={<PortfolioAdmin />} />
+                <Route path="formats" element={<FormatsAdmin />} />
                 <Route path="contact-info" element={<ContactInfoAdmin />} />
               </Route>
             </Routes>

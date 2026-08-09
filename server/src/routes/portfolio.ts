@@ -8,6 +8,9 @@ export const portfolioAdminRouter = Router();
 interface PortfolioRow {
   id: number;
   image_url: string;
+  title_ru: string;
+  title_en: string;
+  title_sk: string;
   caption_ru: string;
   caption_en: string;
   caption_sk: string;
@@ -19,6 +22,7 @@ function serialize(row: PortfolioRow) {
   return {
     id: row.id,
     imageUrl: row.image_url,
+    title: { ru: row.title_ru, en: row.title_en, sk: row.title_sk },
     caption: { ru: row.caption_ru, en: row.caption_en, sk: row.caption_sk },
     published: Boolean(row.published),
     sortOrder: row.sort_order,
@@ -38,15 +42,18 @@ portfolioAdminRouter.get("/", requireAdmin, (_req, res) => {
 });
 
 portfolioAdminRouter.post("/", requireAdmin, (req, res) => {
-  const { imageUrl, caption, sortOrder } = req.body ?? {};
+  const { imageUrl, title, caption, sortOrder } = req.body ?? {};
   if (!imageUrl) return res.status(400).json({ ok: false, error: "Missing imageUrl" });
   const result = db
     .prepare(`
-      INSERT INTO portfolio_photos (image_url, caption_ru, caption_en, caption_sk, sort_order)
-      VALUES (@image_url, @caption_ru, @caption_en, @caption_sk, @sort_order)
+      INSERT INTO portfolio_photos (image_url, title_ru, title_en, title_sk, caption_ru, caption_en, caption_sk, sort_order)
+      VALUES (@image_url, @title_ru, @title_en, @title_sk, @caption_ru, @caption_en, @caption_sk, @sort_order)
     `)
     .run({
       image_url: imageUrl,
+      title_ru: title?.ru ?? "",
+      title_en: title?.en ?? "",
+      title_sk: title?.sk ?? "",
       caption_ru: caption?.ru ?? "",
       caption_en: caption?.en ?? "",
       caption_sk: caption?.sk ?? "",
@@ -57,7 +64,7 @@ portfolioAdminRouter.post("/", requireAdmin, (req, res) => {
 });
 
 portfolioAdminRouter.put("/:id", requireAdmin, (req, res) => {
-  const { caption, sortOrder } = req.body ?? {};
+  const { title, caption, sortOrder } = req.body ?? {};
   const existing = db.prepare("SELECT * FROM portfolio_photos WHERE id = ?").get(req.params.id) as
     | PortfolioRow
     | undefined;
@@ -65,10 +72,14 @@ portfolioAdminRouter.put("/:id", requireAdmin, (req, res) => {
 
   db.prepare(`
     UPDATE portfolio_photos SET
+      title_ru = @title_ru, title_en = @title_en, title_sk = @title_sk,
       caption_ru = @caption_ru, caption_en = @caption_en, caption_sk = @caption_sk, sort_order = @sort_order
     WHERE id = @id
   `).run({
     id: existing.id,
+    title_ru: title?.ru ?? existing.title_ru,
+    title_en: title?.en ?? existing.title_en,
+    title_sk: title?.sk ?? existing.title_sk,
     caption_ru: caption?.ru ?? existing.caption_ru,
     caption_en: caption?.en ?? existing.caption_en,
     caption_sk: caption?.sk ?? existing.caption_sk,

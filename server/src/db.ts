@@ -46,10 +46,26 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS portfolio_photos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     image_url TEXT NOT NULL,
+    title_ru TEXT NOT NULL DEFAULT '',
+    title_en TEXT NOT NULL DEFAULT '',
+    title_sk TEXT NOT NULL DEFAULT '',
     caption_ru TEXT NOT NULL DEFAULT '',
     caption_en TEXT NOT NULL DEFAULT '',
     caption_sk TEXT NOT NULL DEFAULT '',
     published INTEGER NOT NULL DEFAULT 0,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS formats (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title_ru TEXT NOT NULL,
+    title_en TEXT NOT NULL,
+    title_sk TEXT NOT NULL,
+    description_ru TEXT NOT NULL,
+    description_en TEXT NOT NULL,
+    description_sk TEXT NOT NULL,
+    image_url TEXT,
     sort_order INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
@@ -69,3 +85,12 @@ db.exec(`
     address_note_sk TEXT NOT NULL DEFAULT ''
   );
 `);
+
+const portfolioColumns = new Set(
+  (db.prepare("PRAGMA table_info(portfolio_photos)").all() as { name: string }[]).map((c) => c.name),
+);
+for (const col of ["title_ru", "title_en", "title_sk"]) {
+  if (!portfolioColumns.has(col)) {
+    db.exec(`ALTER TABLE portfolio_photos ADD COLUMN ${col} TEXT NOT NULL DEFAULT ''`);
+  }
+}

@@ -105,6 +105,100 @@ export function seedServicesIfEmpty() {
   console.log(`Seeded ${INITIAL_SERVICES.length} services into the database.`);
 }
 
+const INITIAL_FORMATS = [
+  {
+    title: { ru: "Романтические свидания", en: "Romantic Dates", sk: "Romantické rande" },
+    description: {
+      ru: "Камерные вечера для двоих с продуманным сценарием и декором.",
+      en: "Intimate evenings for two, with a carefully considered script and decor.",
+      sk: "Komorné večery pre dvoch s premysleným scenárom a dekorom.",
+    },
+  },
+  {
+    title: { ru: "Бранчи и завтраки", en: "Brunches & Breakfasts", sk: "Brunche a raňajky" },
+    description: {
+      ru: "Дневные события в тёплой, воздушной атмосфере.",
+      en: "Daytime gatherings in a warm, light-filled atmosphere.",
+      sk: "Denné podujatia v teplej, vzdušnej atmosfére.",
+    },
+  },
+  {
+    title: { ru: "Дегустации и ужины шефов", en: "Tastings & Chef's Dinners", sk: "Ochutnávky a šéfkuchárske večere" },
+    description: {
+      ru: "Гастрономические вечера с акцентом на вкус и подачу.",
+      en: "Gastronomic evenings focused on flavour and presentation.",
+      sk: "Gastronomické večery zamerané na chuť a podanie.",
+    },
+  },
+  {
+    title: { ru: "Творческие мастер-классы", en: "Creative Workshops", sk: "Kreatívne workshopy" },
+    description: {
+      ru: "От флористики до керамики — события с эффектом присутствия.",
+      en: "From floristry to ceramics — hands-on, memorable events.",
+      sk: "Od floristiky po keramiku — podujatia so zážitkom.",
+    },
+  },
+  {
+    title: { ru: "Дни рождения и юбилеи", en: "Birthdays & Anniversaries", sk: "Narodeniny a výročia" },
+    description: {
+      ru: "Частные праздники с индивидуальной концепцией.",
+      en: "Private celebrations with a bespoke concept.",
+      sk: "Súkromné oslavy s konceptom na mieru.",
+    },
+  },
+  {
+    title: { ru: "Корпоративные приёмы", en: "Corporate Receptions", sk: "Firemné recepcie" },
+    description: {
+      ru: "Деловые и командные события с продуманной логистикой.",
+      en: "Business and team events with thoughtful logistics.",
+      sk: "Obchodné a tímové podujatia s premyslenou logistikou.",
+    },
+  },
+  {
+    title: { ru: "Бренд-активации", en: "Brand Activations", sk: "Aktivácie značiek" },
+    description: {
+      ru: "Атмосферные события для запуска продукта или коллаборации.",
+      en: "Atmospheric launches and collaboration events.",
+      sk: "Atmosferické podujatia pre launch produktu či kolaboráciu.",
+    },
+  },
+  {
+    title: { ru: "Сезонные и тематические события", en: "Seasonal & Themed Events", sk: "Sezónne a tematické podujatia" },
+    description: {
+      ru: "От летних вечеринок до зимних приёмов у камина.",
+      en: "From summer parties to fireside winter receptions.",
+      sk: "Od letných párty po zimné recepcie pri krbe.",
+    },
+  },
+];
+
+export function seedFormatsIfEmpty() {
+  const { count } = db.prepare("SELECT COUNT(*) as count FROM formats").get() as { count: number };
+  if (count > 0) return;
+
+  const insert = db.prepare(`
+    INSERT INTO formats (title_ru, title_en, title_sk, description_ru, description_en, description_sk, sort_order)
+    VALUES (@title_ru, @title_en, @title_sk, @description_ru, @description_en, @description_sk, @sort_order)
+  `);
+
+  const insertAll = db.transaction((items: typeof INITIAL_FORMATS) => {
+    items.forEach((item, i) => {
+      insert.run({
+        title_ru: item.title.ru,
+        title_en: item.title.en,
+        title_sk: item.title.sk,
+        description_ru: item.description.ru,
+        description_en: item.description.en,
+        description_sk: item.description.sk,
+        sort_order: i,
+      });
+    });
+  });
+
+  insertAll(INITIAL_FORMATS);
+  console.log(`Seeded ${INITIAL_FORMATS.length} formats into the database.`);
+}
+
 export function seedContactInfoIfEmpty() {
   const existing = db.prepare("SELECT id FROM contact_info WHERE id = 1").get();
   if (existing) return;

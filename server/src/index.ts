@@ -10,17 +10,19 @@ import { fileURLToPath } from "node:url";
 import { appendSubmission, listSubmissions, type Submission } from "./store.js";
 import { sendTelegramNotification } from "./telegram.js";
 import "./db.js";
-import { seedServicesIfEmpty, seedContactInfoIfEmpty } from "./seed.js";
+import { seedServicesIfEmpty, seedFormatsIfEmpty, seedContactInfoIfEmpty } from "./seed.js";
 import { adminRouter } from "./routes/admin.js";
 import { servicesPublicRouter, servicesAdminRouter } from "./routes/services.js";
 import { decorPublicRouter, decorAdminRouter } from "./routes/decor.js";
 import { portfolioPublicRouter, portfolioAdminRouter } from "./routes/portfolio.js";
+import { formatsPublicRouter, formatsAdminRouter } from "./routes/formats.js";
 import { contactInfoPublicRouter, contactInfoAdminRouter } from "./routes/contactInfo.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOADS_DIR = path.resolve(__dirname, "../uploads");
 fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 seedServicesIfEmpty();
+seedFormatsIfEmpty();
 seedContactInfoIfEmpty();
 
 const app = express();
@@ -102,11 +104,13 @@ app.use("/api/admin", adminRouter);
 app.use("/api/admin/services", servicesAdminRouter);
 app.use("/api/admin/decor", decorAdminRouter);
 app.use("/api/admin/portfolio", portfolioAdminRouter);
+app.use("/api/admin/formats", formatsAdminRouter);
 app.use("/api/admin/contact-info", contactInfoAdminRouter);
 
 app.use("/api/services", servicesPublicRouter);
 app.use("/api/decor", decorPublicRouter);
 app.use("/api/portfolio", portfolioPublicRouter);
+app.use("/api/formats", formatsPublicRouter);
 app.use("/api/contact-info", contactInfoPublicRouter);
 
 app.get("/api/submissions", async (req, res) => {

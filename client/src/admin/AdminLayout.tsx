@@ -4,6 +4,7 @@ import { useAdminAuth } from "@/lib/AdminAuthContext";
 
 const NAV_ITEMS = [
   { to: "/admin/services", label: "Услуги" },
+  { to: "/admin/formats", label: "Форматы" },
   { to: "/admin/decor", label: "Аренда декора" },
   { to: "/admin/portfolio", label: "Портфолио" },
   { to: "/admin/contact-info", label: "Контакты" },

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { decorApi, translateText, uploadImage, type AdminDecorItem } from "@/lib/adminApi";
+import { decorApi, translateText, uploadImage, formatPriceEuro, type AdminDecorItem } from "@/lib/adminApi";
 
 interface DraftDecorItem {
   id: number | null;
@@ -12,9 +12,19 @@ interface DraftDecorItem {
 
 const EMPTY_DRAFT: DraftDecorItem = { id: null, nameRu: "", descriptionRu: "", price: "", images: [] };
 
-function DecorPreviewCard({ name, price, images }: { name: string; price: string; images: string[] }) {
+function DecorPreviewCard({
+  name,
+  description,
+  price,
+  images,
+}: {
+  name: string;
+  description: string;
+  price: string;
+  images: string[];
+}) {
   return (
-    <div className="overflow-hidden rounded-2xl bg-ivory shadow-soft">
+    <div className="overflow-hidden rounded-2xl bg-paper shadow-soft">
       <div className="aspect-[4/3] bg-cream">
         {images[0] ? (
           <img src={images[0]} alt="" className="h-full w-full object-cover" />
@@ -24,7 +34,8 @@ function DecorPreviewCard({ name, price, images }: { name: string; price: string
       </div>
       <div className="p-4">
         <h3 className="text-base text-ink">{name || "Название позиции"}</h3>
-        {price && <p className="mt-1 text-sm text-wine-700">{price}</p>}
+        {description && <p className="mt-1.5 text-sm leading-relaxed text-ink-soft/70">{description}</p>}
+        {price && <p className="mt-2 kicker text-wine-700">{price}</p>}
         {images.length > 1 && <p className="mt-1 text-xs text-ink-soft/40">+{images.length - 1} фото</p>}
       </div>
     </div>
@@ -154,8 +165,9 @@ export default function DecorAdmin() {
                 <input
                   value={draft.price}
                   onChange={(e) => setDraft((d) => ({ ...d, price: e.target.value }))}
+                  onBlur={(e) => setDraft((d) => ({ ...d, price: formatPriceEuro(e.target.value) }))}
                   className="w-full rounded-lg border border-ink/15 bg-cream px-3.5 py-2.5 text-ink outline-none focus:border-wine-700"
-                  placeholder="например: 15 € / день"
+                  placeholder="например: 15 или 15 € / день"
                 />
               </div>
 
@@ -257,7 +269,12 @@ export default function DecorAdmin() {
           <h2 className="mb-3 text-sm font-medium text-ink">Как будет выглядеть на сайте</h2>
           <div className="rounded-2xl bg-wine-950/5 p-6">
             <div className="mx-auto max-w-xs">
-              <DecorPreviewCard name={draft.nameRu} price={draft.price} images={draft.images} />
+              <DecorPreviewCard
+                name={draft.nameRu}
+                description={draft.descriptionRu}
+                price={draft.price}
+                images={draft.images}
+              />
             </div>
           </div>
         </div>

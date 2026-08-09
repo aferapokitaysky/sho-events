@@ -17,9 +17,17 @@ export interface PublicDecorItem {
   images: { id: number; url: string }[];
 }
 
+export interface PublicFormat {
+  id: number;
+  title: LocalizedText;
+  description: LocalizedText;
+  imageUrl: string | null;
+}
+
 export interface PublicPortfolioPhoto {
   id: number;
   imageUrl: string;
+  title: LocalizedText;
   caption: LocalizedText;
 }
 
@@ -64,6 +72,11 @@ export async function fetchServices(): Promise<PublicService[]> {
 export async function fetchDecorItems(): Promise<PublicDecorItem[]> {
   const data = await getJson<{ ok: true; items: PublicDecorItem[] }>("/api/decor");
   return data.items;
+}
+
+export async function fetchFormats(): Promise<PublicFormat[]> {
+  const data = await getJson<{ ok: true; formats: PublicFormat[] }>("/api/formats");
+  return data.formats;
 }
 
 export async function fetchPortfolioPhotos(): Promise<PublicPortfolioPhoto[]> {

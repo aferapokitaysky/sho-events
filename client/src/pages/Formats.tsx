@@ -1,34 +1,22 @@
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { Container, Divider } from "@/components/ui/Section";
 import { Reveal, RevealItem, RevealStagger } from "@/components/ui/Reveal";
 import { ButtonLink } from "@/components/ui/Button";
 import { PhotoBandHero } from "@/components/ui/PhotoBandHero";
-import {
-  IconBriefcase,
-  IconCandle,
-  IconGift,
-  IconGlass,
-  IconGrapes,
-  IconPalette,
-  IconRing,
-  IconSparkle,
-} from "@/components/icons";
-import type { ComponentType, SVGProps } from "react";
+import { IconSparkle } from "@/components/icons";
+import { fetchFormats, pick, type PublicFormat } from "@/lib/publicContent";
 import bannerPhoto from "@/assets/photos/hero-formats-band.webp";
 
-const formatIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
-  romantic: IconRing,
-  brunch: IconGlass,
-  tasting: IconGrapes,
-  masterclass: IconPalette,
-  private: IconGift,
-  corporate: IconBriefcase,
-  brand: IconSparkle,
-  seasonal: IconCandle,
-};
-
 export default function Formats() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const [formats, setFormats] = useState<PublicFormat[]>([]);
+
+  useEffect(() => {
+    fetchFormats()
+      .then(setFormats)
+      .catch(() => setFormats([]));
+  }, []);
 
   return (
     <div>
@@ -44,20 +32,33 @@ export default function Formats() {
       <section className="py-24 sm:py-32">
         <Container>
           <RevealStagger className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {t.formats.formats.map((format) => {
-              const Icon = formatIcons[format.id] ?? IconSparkle;
+            {formats.map((format, i) => {
+              const title = pick(format.title, lang);
+              const description = pick(format.description, lang);
+              const isLastAlone = i === formats.length - 1 && formats.length % 3 === 1;
               return (
-                <RevealItem key={format.id}>
-                  <div
-                    id={format.id}
-                    className="group relative flex h-full scroll-mt-32 flex-col justify-between overflow-hidden rounded-[1.75rem] bg-paper p-9 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-card"
-                  >
-                    <Icon className="h-9 w-9 text-wine-700" />
-                    <div className="mt-10">
-                      <h3 className="text-2xl text-ink">{format.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-ink-soft/70">{format.description}</p>
+                <RevealItem key={format.id} className={isLastAlone ? "sm:col-span-2 lg:col-span-3" : undefined}>
+                  <div className="group relative flex h-full scroll-mt-32 flex-col justify-between overflow-hidden rounded-[1.75rem] bg-paper p-9 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-card">
+                    {format.imageUrl && (
+                      <>
+                        <img
+                          src={format.imageUrl}
+                          alt=""
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-wine-950/88 via-wine-950/35 to-wine-950/5" />
+                      </>
+                    )}
+                    <IconSparkle className={format.imageUrl ? "relative h-9 w-9 text-beige-dark" : "h-9 w-9 text-wine-700"} />
+                    <div className={format.imageUrl ? "relative mt-10" : "mt-10"}>
+                      <h3 className={format.imageUrl ? "text-2xl text-ivory" : "text-2xl text-ink"}>{title}</h3>
+                      <p className={format.imageUrl ? "mt-2 text-sm leading-relaxed text-ivory/70" : "mt-2 text-sm leading-relaxed text-ink-soft/70"}>
+                        {description}
+                      </p>
                     </div>
-                    <div className="pointer-events-none absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-wine-700/0 blur-2xl transition-colors duration-500 group-hover:bg-wine-700/10" />
+                    {!format.imageUrl && (
+                      <div className="pointer-events-none absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-wine-700/0 blur-2xl transition-colors duration-500 group-hover:bg-wine-700/10" />
+                    )}
                   </div>
                 </RevealItem>
               );

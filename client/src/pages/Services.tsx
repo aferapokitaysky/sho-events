@@ -33,11 +33,12 @@ export default function Services() {
       <section className="py-24 sm:py-32">
         <Container>
           <RevealStagger className="grid gap-px overflow-hidden rounded-[1.75rem] bg-ink/10 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => {
+            {services.map((service, i) => {
               const title = pick(service.title, lang);
               const description = pick(service.description, lang);
+              const isLastAlone = i === services.length - 1 && services.length % 3 === 1;
               return (
-                <RevealItem key={service.id}>
+                <RevealItem key={service.id} className={isLastAlone ? "sm:col-span-2 lg:col-span-3" : undefined}>
                   {service.imageUrl ? (
                     <div className="group relative flex h-full min-h-[300px] flex-col justify-between overflow-hidden p-9">
                       <img
@@ -50,7 +51,7 @@ export default function Services() {
                       <div className="relative">
                         <h3 className="text-2xl text-ivory">{title}</h3>
                         <p className="mt-2 text-sm leading-relaxed text-ivory/70">{description}</p>
-                        {service.price && <p className="mt-3 kicker text-beige-dark">{service.price}</p>}
+                        {service.price && <p className="mt-3 text-sm text-ivory/70">{service.price}</p>}
                       </div>
                     </div>
                   ) : (
@@ -62,7 +63,7 @@ export default function Services() {
                           {description}
                         </p>
                         {service.price && (
-                          <p className="mt-3 kicker text-wine-700 transition-colors duration-500 group-hover:text-beige-dark">
+                          <p className="mt-3 text-sm text-ink-soft/70 transition-colors duration-500 group-hover:text-ivory/60">
                             {service.price}
                           </p>
                         )}

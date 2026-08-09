@@ -4,12 +4,35 @@ export interface LocalizedText {
   sk: string;
 }
 
+export function formatPriceEuro(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return trimmed;
+  if (/[€$£]/.test(trimmed)) return trimmed;
+
+  const match = trimmed.match(/^(от\s+|from\s+|od\s+)?(\d+(?:[.,]\d+)?)$/i);
+  if (!match) return trimmed;
+
+  const [, prefix = "", number] = match;
+  const normalized = number.replace(",", ".");
+  const amount = Number(normalized);
+  const display = Number.isInteger(amount) ? String(amount) : normalized;
+  return `${prefix}${display} €`;
+}
+
 export interface AdminService {
   id: number;
   title: LocalizedText;
   description: LocalizedText;
   imageUrl: string | null;
   price: string | null;
+  sortOrder: number;
+}
+
+export interface AdminFormat {
+  id: number;
+  title: LocalizedText;
+  description: LocalizedText;
+  imageUrl: string | null;
   sortOrder: number;
 }
 
@@ -31,6 +54,7 @@ export interface AdminDecorItem {
 export interface AdminPortfolioPhoto {
   id: number;
   imageUrl: string;
+  title: LocalizedText;
   caption: LocalizedText;
   published: boolean;
   sortOrder: number;
@@ -105,6 +129,21 @@ export const servicesApi = {
   remove: (id: number) => request<{ ok: true }>(`/api/admin/services/${id}`, { method: "DELETE" }),
 };
 
+export const formatsApi = {
+  list: () => request<{ ok: true; formats: AdminFormat[] }>("/api/admin/formats").then((r) => r.formats),
+  create: (payload: Partial<Omit<AdminFormat, "id">>) =>
+    request<{ ok: true; format: AdminFormat }>("/api/admin/formats", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }).then((r) => r.format),
+  update: (id: number, payload: Partial<Omit<AdminFormat, "id">>) =>
+    request<{ ok: true; format: AdminFormat }>(`/api/admin/formats/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }).then((r) => r.format),
+  remove: (id: number) => request<{ ok: true }>(`/api/admin/formats/${id}`, { method: "DELETE" }),
+};
+
 export const decorApi = {
   list: () => request<{ ok: true; items: AdminDecorItem[] }>("/api/admin/decor").then((r) => r.items),
   create: (payload: { name: LocalizedText; description: LocalizedText; price: string | null; images: string[] }) =>
@@ -125,12 +164,12 @@ export const decorApi = {
 
 export const portfolioApi = {
   list: () => request<{ ok: true; photos: AdminPortfolioPhoto[] }>("/api/admin/portfolio").then((r) => r.photos),
-  create: (payload: { imageUrl: string; caption: LocalizedText }) =>
+  create: (payload: { imageUrl: string; title: LocalizedText; caption: LocalizedText }) =>
     request<{ ok: true; photo: AdminPortfolioPhoto }>("/api/admin/portfolio", {
       method: "POST",
       body: JSON.stringify(payload),
     }).then((r) => r.photo),
-  update: (id: number, payload: Partial<{ caption: LocalizedText }>) =>
+  update: (id: number, payload: Partial<{ title: LocalizedText; caption: LocalizedText }>) =>
     request<{ ok: true; photo: AdminPortfolioPhoto }>(`/api/admin/portfolio/${id}`, {
       method: "PUT",
       body: JSON.stringify(payload),

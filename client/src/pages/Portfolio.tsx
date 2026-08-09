@@ -1,16 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { Container, Divider } from "@/components/ui/Section";
 import { Reveal, RevealItem, RevealStagger } from "@/components/ui/Reveal";
 import { PhotoBandHero } from "@/components/ui/PhotoBandHero";
 import { ButtonLink } from "@/components/ui/Button";
+import { ConnectingPath } from "@/components/ui/ConnectingPath";
 import { fetchPortfolioPhotos, pick, type PublicPortfolioPhoto } from "@/lib/publicContent";
 import heroPhoto from "@/assets/photos/card-memorable-moments.webp";
+
+const ROW_OFFSET = ["sm:mt-0", "sm:mt-12", "sm:mt-6"];
 
 export default function Portfolio() {
   const { t, lang } = useLanguage();
   const [photos, setPhotos] = useState<PublicPortfolioPhoto[]>([]);
   const [loading, setLoading] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     fetchPortfolioPhotos()
@@ -35,19 +40,39 @@ export default function Portfolio() {
           {!loading && photos.length === 0 ? (
             <p className="text-center text-ink-soft/50">{t.portfolio.emptyText}</p>
           ) : (
-            <RevealStagger className="columns-1 gap-6 sm:columns-2 lg:columns-3 [&>*]:mb-6">
-              {photos.map((photo) => {
-                const caption = pick(photo.caption, lang);
-                return (
-                  <RevealItem key={photo.id} className="break-inside-avoid">
-                    <div className="overflow-hidden rounded-2xl bg-ivory shadow-soft">
-                      <img src={photo.imageUrl} alt={caption || "SHO Events"} className="w-full object-cover" />
-                      {caption && <p className="p-4 text-sm text-ink-soft/70">{caption}</p>}
-                    </div>
-                  </RevealItem>
-                );
-              })}
-            </RevealStagger>
+            <div ref={containerRef} className="relative">
+              <ConnectingPath containerRef={containerRef} itemRefs={itemRefs} count={photos.length} />
+              <RevealStagger className="relative grid grid-cols-2 gap-10 sm:gap-16 lg:grid-cols-3">
+                {photos.map((photo, i) => {
+                  const title = pick(photo.title, lang);
+                  const caption = pick(photo.caption, lang);
+                  return (
+                    <RevealItem key={photo.id} className={ROW_OFFSET[i % 3]}>
+                      <div
+                        ref={(el) => {
+                          itemRefs.current[i] = el;
+                        }}
+                        className="group overflow-hidden rounded-2xl bg-paper shadow-soft"
+                      >
+                        <div className="aspect-[4/5] overflow-hidden">
+                          <img
+                            src={photo.imageUrl}
+                            alt={title || "SHO Events"}
+                            className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+                          />
+                        </div>
+                        {(title || caption) && (
+                          <div className="p-4">
+                            {title && <h3 className="text-base text-ink">{title}</h3>}
+                            {caption && <p className="mt-1 text-sm leading-relaxed text-ink-soft/70">{caption}</p>}
+                          </div>
+                        )}
+                      </div>
+                    </RevealItem>
+                  );
+                })}
+              </RevealStagger>
+            </div>
           )}
         </Container>
       </section>

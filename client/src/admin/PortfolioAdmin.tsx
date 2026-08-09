@@ -7,10 +7,11 @@ import { Toggle } from "@/admin/components/Toggle";
 interface DraftPhoto {
   id: number | null;
   imageUrl: string | null;
-  captionRu: string;
+  titleRu: string;
+  descriptionRu: string;
 }
 
-const EMPTY_DRAFT: DraftPhoto = { id: null, imageUrl: null, captionRu: "" };
+const EMPTY_DRAFT: DraftPhoto = { id: null, imageUrl: null, titleRu: "", descriptionRu: "" };
 
 export default function PortfolioAdmin() {
   const [photos, setPhotos] = useState<AdminPortfolioPhoto[]>([]);
@@ -30,7 +31,12 @@ export default function PortfolioAdmin() {
   useEffect(refresh, []);
 
   function editPhoto(photo: AdminPortfolioPhoto) {
-    setDraft({ id: photo.id, imageUrl: photo.imageUrl, captionRu: photo.caption.ru });
+    setDraft({
+      id: photo.id,
+      imageUrl: photo.imageUrl,
+      titleRu: photo.title.ru,
+      descriptionRu: photo.caption.ru,
+    });
   }
 
   function resetDraft() {
@@ -46,11 +52,14 @@ export default function PortfolioAdmin() {
     setSaving(true);
     setError(null);
     try {
-      const caption = await translateText(draft.captionRu, "ru");
+      const [title, caption] = await Promise.all([
+        translateText(draft.titleRu, "ru"),
+        translateText(draft.descriptionRu, "ru"),
+      ]);
       if (draft.id) {
-        await portfolioApi.update(draft.id, { caption });
+        await portfolioApi.update(draft.id, { title, caption });
       } else {
-        await portfolioApi.create({ imageUrl: draft.imageUrl, caption });
+        await portfolioApi.create({ imageUrl: draft.imageUrl, title, caption });
       }
       resetDraft();
       refresh();
@@ -88,12 +97,22 @@ export default function PortfolioAdmin() {
             <div className="mt-4 space-y-4">
               <ImageUploader value={draft.imageUrl} onChange={(url) => setDraft((d) => ({ ...d, imageUrl: url }))} />
               <div>
-                <label className="mb-1 block text-xs uppercase tracking-wide text-ink-soft/50">Подпись (необязательно)</label>
+                <label className="mb-1 block text-xs uppercase tracking-wide text-ink-soft/50">Название (необязательно)</label>
                 <input
-                  value={draft.captionRu}
-                  onChange={(e) => setDraft((d) => ({ ...d, captionRu: e.target.value }))}
+                  value={draft.titleRu}
+                  onChange={(e) => setDraft((d) => ({ ...d, titleRu: e.target.value }))}
                   className="w-full rounded-lg border border-ink/15 bg-cream px-3.5 py-2.5 text-ink outline-none focus:border-wine-700"
-                  placeholder="Например: Свадебный бранч, июль 2026"
+                  placeholder="Например: Свадебный бранч"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs uppercase tracking-wide text-ink-soft/50">Описание (необязательно)</label>
+                <textarea
+                  value={draft.descriptionRu}
+                  onChange={(e) => setDraft((d) => ({ ...d, descriptionRu: e.target.value }))}
+                  rows={2}
+                  className="w-full rounded-lg border border-ink/15 bg-cream px-3.5 py-2.5 text-ink outline-none focus:border-wine-700"
+                  placeholder="Короткое описание момента — где и когда"
                 />
               </div>
             </div>
@@ -123,7 +142,7 @@ export default function PortfolioAdmin() {
         <div>
           <h2 className="mb-3 text-sm font-medium text-ink">Как будет выглядеть на сайте</h2>
           <div className="rounded-2xl bg-wine-950/5 p-6">
-            <div className="mx-auto max-w-xs overflow-hidden rounded-2xl bg-ivory shadow-soft">
+            <div className="mx-auto max-w-xs overflow-hidden rounded-2xl bg-paper shadow-soft">
               <div className="aspect-[4/5] bg-cream">
                 {draft.imageUrl ? (
                   <img src={draft.imageUrl} alt="" className="h-full w-full object-cover" />
@@ -131,7 +150,12 @@ export default function PortfolioAdmin() {
                   <div className="flex h-full items-center justify-center text-xs text-ink-soft/40">нет фото</div>
                 )}
               </div>
-              {draft.captionRu && <p className="p-3 text-sm text-ink-soft/70">{draft.captionRu}</p>}
+              {(draft.titleRu || draft.descriptionRu) && (
+                <div className="p-4">
+                  {draft.titleRu && <h3 className="text-base text-ink">{draft.titleRu}</h3>}
+                  {draft.descriptionRu && <p className="mt-1 text-sm text-ink-soft/70">{draft.descriptionRu}</p>}
+                </div>
+              )}
             </div>
           </div>
         </div>
