@@ -1,7 +1,7 @@
 import { languages, type Lang } from "@/content";
 import { pagePaths, pathToPage, type PageKey } from "@/content/seo";
 
-const FALLBACK_SITE_URL = "https://shoevents.sk";
+const FALLBACK_SITE_URL = "https://shoevents.org";
 
 function trimTrailingSlash(value: string) {
   return value.replace(/\/+$/, "");

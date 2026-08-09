@@ -1,9 +1,10 @@
 FROM node:22-alpine AS build
 WORKDIR /app/client
+ENV VITE_SITE_URL=https://shoevents.org
 COPY client/package.json client/package-lock.json ./
 RUN npm ci
 COPY client ./
-RUN npm run build
+RUN npm run seo:sitemap && npm run build
 
 FROM nginx:1.27-alpine
 RUN rm -f /etc/nginx/conf.d/default.conf

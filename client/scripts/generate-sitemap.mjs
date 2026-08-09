@@ -1,4 +1,4 @@
-const SITE_URL = (process.env.VITE_SITE_URL || "https://shoevents.sk").replace(/\/+$/, "");
+const SITE_URL = (process.env.VITE_SITE_URL || "https://shoevents.org").replace(/\/+$/, "");
 const languages = ["ru", "en", "sk"];
 const pages = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
