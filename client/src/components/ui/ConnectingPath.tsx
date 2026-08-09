@@ -6,25 +6,45 @@ interface Point {
   y: number;
 }
 
-function smoothPath(points: Point[]): string {
+function buildLoopyPath(points: Point[]): string {
   if (points.length < 2) return "";
-  if (points.length === 2) {
-    return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
+
+  let totalDist = 0;
+  for (let i = 0; i < points.length - 1; i++) {
+    totalDist += Math.hypot(points[i + 1].x - points[i].x, points[i + 1].y - points[i].y);
   }
+  const avgDist = totalDist / (points.length - 1) || 1;
+  const loopRadius = Math.max(26, Math.min(avgDist * 0.22, 64));
 
   let d = `M ${points[0].x} ${points[0].y}`;
+
   for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i - 1] ?? points[i];
     const p1 = points[i];
     const p2 = points[i + 1];
-    const p3 = points[i + 2] ?? p2;
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const ux = dx / dist;
+    const uy = dy / dist;
+    const nx = -uy;
+    const ny = ux;
+    const side = i % 2 === 0 ? 1 : -1;
 
-    const cp1x = p1.x + (p2.x - p0.x) / 6;
-    const cp1y = p1.y + (p2.y - p0.y) / 6;
-    const cp2x = p2.x - (p3.x - p1.x) / 6;
-    const cp2y = p2.y - (p3.y - p1.y) / 6;
+    const bulge = dist * 0.34 * side;
+    const c1x = p1.x + dx * 0.28 + nx * bulge;
+    const c1y = p1.y + dy * 0.28 + ny * bulge;
+    const c2x = p1.x + dx * 0.72 + nx * bulge;
+    const c2y = p1.y + dy * 0.72 + ny * bulge;
 
-    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+    d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2.x} ${p2.y}`;
+
+    const isIntermediate = i < points.length - 2;
+    if (isIntermediate) {
+      const sweep = side > 0 ? 1 : 0;
+      const exitX = p2.x + ux * 4 + nx * side * 4;
+      const exitY = p2.y + uy * 4 + ny * side * 4;
+      d += ` A ${loopRadius} ${loopRadius} 0 1 ${sweep} ${exitX} ${exitY}`;
+    }
   }
   return d;
 }
@@ -63,7 +83,7 @@ export function ConnectingPath({
         setState({ d: "", width: 0, height: 0 });
         return;
       }
-      setState({ d: smoothPath(points), width: containerRect.width, height: containerRect.height });
+      setState({ d: buildLoopyPath(points), width: containerRect.width, height: containerRect.height });
     }
 
     recompute();
@@ -78,7 +98,7 @@ export function ConnectingPath({
     };
   }, [containerRef, itemRefs, count]);
 
-  const duration = Math.min(2.4 + count * 0.65, 7.5);
+  const duration = Math.min(2.8 + count * 0.75, 8.5);
 
   return (
     <svg
@@ -95,24 +115,16 @@ export function ConnectingPath({
           <stop offset="50%" stopColor="var(--color-beige-dark)" />
           <stop offset="100%" stopColor="var(--color-wine-700)" />
         </linearGradient>
-        <filter id="portfolio-thread-glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="6" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
       </defs>
       {state.d && (
         <motion.path
           d={state.d}
           fill="none"
           stroke="url(#portfolio-thread)"
-          strokeWidth={7}
+          strokeWidth={6}
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity={0.85}
-          filter="url(#portfolio-thread-glow)"
+          opacity={0.8}
           initial={{ pathLength: 0 }}
           animate={inView ? { pathLength: 1 } : { pathLength: 0 }}
           transition={{ duration, delay: 0.3, ease: "easeInOut" }}

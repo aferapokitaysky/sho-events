@@ -8,7 +8,7 @@ import { ConnectingPath } from "@/components/ui/ConnectingPath";
 import { fetchPortfolioPhotos, pick, type PublicPortfolioPhoto } from "@/lib/publicContent";
 import heroPhoto from "@/assets/photos/card-memorable-moments.webp";
 
-const ROW_OFFSET = ["sm:mt-0", "sm:mt-12", "sm:mt-6"];
+const ROW_OFFSET = ["sm:mt-0", "sm:mt-20", "sm:mt-10"];
 
 export default function Portfolio() {
   const { t, lang } = useLanguage();
@@ -42,7 +42,7 @@ export default function Portfolio() {
           ) : (
             <div ref={containerRef} className="relative">
               <ConnectingPath containerRef={containerRef} itemRefs={itemRefs} count={photos.length} />
-              <RevealStagger className="relative grid grid-cols-2 gap-10 sm:gap-16 lg:grid-cols-3">
+              <RevealStagger className="relative grid grid-cols-2 gap-16 sm:gap-24 lg:grid-cols-3">
                 {photos.map((photo, i) => {
                   const title = pick(photo.title, lang);
                   const caption = pick(photo.caption, lang);
