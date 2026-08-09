@@ -77,6 +77,22 @@ function copySeedImage(filename: string): string {
   return `/api/uploads/${dest}`;
 }
 
+const SEED_IMAGE_FILES = ["figure-hippo.webp", "table-bright.webp"];
+
+// Restores seed images into the uploads volume if they're ever missing there
+// (e.g. the uploads volume was recreated independently of the DB volume),
+// regardless of whether the DB itself still needs seeding.
+export function ensureSeedImages() {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  for (const filename of SEED_IMAGE_FILES) {
+    const destPath = path.join(UPLOADS_DIR, `seed-${filename}`);
+    const srcPath = path.join(SEED_ASSETS_DIR, filename);
+    if (!fs.existsSync(destPath) && fs.existsSync(srcPath)) {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
 export function seedServicesIfEmpty() {
   const { count } = db.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
   if (count > 0) return;

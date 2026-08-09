@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { appendSubmission, listSubmissions, type Submission } from "./store.js";
 import { sendTelegramNotification } from "./telegram.js";
 import "./db.js";
-import { seedServicesIfEmpty, seedFormatsIfEmpty, seedContactInfoIfEmpty } from "./seed.js";
+import { seedServicesIfEmpty, seedFormatsIfEmpty, seedContactInfoIfEmpty, ensureSeedImages } from "./seed.js";
 import { adminRouter } from "./routes/admin.js";
 import { servicesPublicRouter, servicesAdminRouter } from "./routes/services.js";
 import { decorPublicRouter, decorAdminRouter } from "./routes/decor.js";
@@ -22,6 +22,7 @@ import { siteImagesPublicRouter, siteImagesAdminRouter } from "./routes/siteImag
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOADS_DIR = path.resolve(__dirname, "../uploads");
 fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+ensureSeedImages();
 seedServicesIfEmpty();
 seedFormatsIfEmpty();
 seedContactInfoIfEmpty();
