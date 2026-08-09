@@ -6,6 +6,10 @@ import App from "./App.tsx";
 import { LanguageProvider } from "@/lib/LanguageContext";
 import { SiteMeta } from "@/components/SiteMeta";
 
+if ("scrollRestoration" in window.history) {
+  window.history.scrollRestoration = "manual";
+}
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
