@@ -14,7 +14,17 @@ interface DraftService {
 
 const EMPTY_DRAFT: DraftService = { id: null, titleRu: "", descriptionRu: "", price: "", imageUrl: null };
 
-function ServicePreviewCard({ title, description, imageUrl }: { title: string; description: string; imageUrl: string | null }) {
+function ServicePreviewCard({
+  title,
+  description,
+  imageUrl,
+  price,
+}: {
+  title: string;
+  description: string;
+  imageUrl: string | null;
+  price: string;
+}) {
   if (imageUrl) {
     return (
       <div className="group relative flex h-full min-h-[240px] flex-col justify-between overflow-hidden rounded-2xl p-7">
@@ -24,6 +34,7 @@ function ServicePreviewCard({ title, description, imageUrl }: { title: string; d
         <div className="relative">
           <h3 className="text-xl text-ivory">{title || "Название услуги"}</h3>
           <p className="mt-2 text-sm leading-relaxed text-ivory/70">{description || "Описание услуги"}</p>
+          {price && <p className="mt-3 kicker text-beige-dark">{price}</p>}
         </div>
       </div>
     );
@@ -34,6 +45,7 @@ function ServicePreviewCard({ title, description, imageUrl }: { title: string; d
       <div>
         <h3 className="text-xl text-ink">{title || "Название услуги"}</h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-soft/70">{description || "Описание услуги"}</p>
+        {price && <p className="mt-3 kicker text-wine-700">{price}</p>}
       </div>
     </div>
   );
@@ -236,7 +248,12 @@ export default function ServicesAdmin() {
           <h2 className="mb-3 text-sm font-medium text-ink">Как будет выглядеть на сайте</h2>
           <div className="rounded-2xl bg-wine-950/5 p-6">
             <div className="mx-auto max-w-sm">
-              <ServicePreviewCard title={draft.titleRu} description={draft.descriptionRu} imageUrl={draft.imageUrl} />
+              <ServicePreviewCard
+                title={draft.titleRu}
+                description={draft.descriptionRu}
+                imageUrl={draft.imageUrl}
+                price={draft.price}
+              />
             </div>
           </div>
         </div>
