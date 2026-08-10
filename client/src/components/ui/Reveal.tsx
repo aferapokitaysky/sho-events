@@ -10,15 +10,15 @@ interface RevealProps {
   once?: boolean;
 }
 
-export function Reveal({ children, delay = 0, y = 28, className, once = true }: RevealProps) {
+export function Reveal({ children, delay = 0, y = 16, className, once = true }: RevealProps) {
   return (
     <motion.div
       className={className}
       initial="hidden"
       whileInView="show"
-      viewport={{ once, margin: "-80px" }}
+      viewport={{ once, margin: "-40px" }}
       variants={{ hidden: { opacity: 0, y }, show: { opacity: 1, y: 0 } }}
-      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
@@ -28,7 +28,7 @@ export function Reveal({ children, delay = 0, y = 28, className, once = true }: 
 export function RevealStagger({
   children,
   className,
-  stagger = 0.09,
+  stagger = 0.05,
 }: {
   children: ReactNode;
   className?: string;
@@ -39,7 +39,7 @@ export function RevealStagger({
       className={className}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-40px" }}
       variants={{
         hidden: {},
         show: { transition: { staggerChildren: stagger } },
@@ -50,12 +50,12 @@ export function RevealStagger({
   );
 }
 
-export function RevealItem({ children, className, y = 24 }: { children: ReactNode; className?: string; y?: number }) {
+export function RevealItem({ children, className, y = 14 }: { children: ReactNode; className?: string; y?: number }) {
   return (
     <motion.div
       className={className}
       variants={{ hidden: { opacity: 0, y }, show: { opacity: 1, y: 0 } }}
-      transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
