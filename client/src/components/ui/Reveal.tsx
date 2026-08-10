@@ -7,16 +7,14 @@ interface RevealProps {
   y?: number;
   className?: string;
   as?: "div" | "span";
-  once?: boolean;
 }
 
-export function Reveal({ children, delay = 0, y = 28, className, once = true }: RevealProps) {
+export function Reveal({ children, delay = 0, y = 28, className }: RevealProps) {
   return (
     <motion.div
       className={className}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once, margin: "-80px" }}
+      animate="show"
       variants={{ hidden: { opacity: 0, y }, show: { opacity: 1, y: 0 } }}
       transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
     >
@@ -38,8 +36,7 @@ export function RevealStagger({
     <motion.div
       className={className}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: "-80px" }}
+      animate="show"
       variants={{
         hidden: {},
         show: { transition: { staggerChildren: stagger } },
