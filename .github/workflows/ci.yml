@@ -1,0 +1,40 @@
+name: Проверка проекта
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить исходный код
+        uses: actions/checkout@v4
+
+      - name: Настроить Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+
+      - name: Установить зависимости клиента
+        run: npm ci --prefix client
+
+      - name: Установить зависимости сервера
+        run: npm ci --prefix server
+
+      - name: Проверить уязвимости production-зависимостей
+        run: |
+          npm audit --prefix client
+          npm audit --prefix server --omit=dev
+
+      - name: Собрать клиент и сервер
+        run: npm run build

@@ -31,6 +31,8 @@ const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN ?? "";
 
+app.set("trust proxy", 1);
+
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN?.split(",") ?? ["http://localhost:5173"],
