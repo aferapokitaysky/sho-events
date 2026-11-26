@@ -15,7 +15,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: deploy/web.Dockerfile
+      dockerfile: deploy/Dockerfile
     restart: unless-stopped
     depends_on:
       - api
