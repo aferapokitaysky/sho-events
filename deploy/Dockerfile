@@ -1,4 +1,4 @@
-FROM nginx:1.27-alpine AS runtime
+FROM nginx:1.29-alpine AS runtime
 RUN rm -f /etc/nginx/conf.d/default.conf
 COPY deploy/nginx/http.conf /etc/nginx/templates/http.conf
 COPY deploy/nginx/ssl.conf /etc/nginx/templates/ssl.conf
