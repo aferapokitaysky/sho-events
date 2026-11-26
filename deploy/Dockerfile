@@ -5,7 +5,7 @@ COPY deploy/nginx/ssl.conf /etc/nginx/templates/ssl.conf
 COPY deploy/nginx/docker-entrypoint-wrapper.sh /docker-entrypoint-wrapper.sh
 RUN chmod +x /docker-entrypoint-wrapper.sh
 
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app/client
 ENV VITE_SITE_URL=https://shoevents.org
 COPY client/package.json client/package-lock.json ./
